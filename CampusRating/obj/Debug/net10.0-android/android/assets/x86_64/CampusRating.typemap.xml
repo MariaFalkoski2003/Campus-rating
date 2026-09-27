@@ -1,0 +1,10 @@
+<api type="debug" assembly-name="CampusRating" mvid="564cf3ca3ca440d69083d2926ea1671c">
+  <java-to-managed>
+    <entry java-name="crc647120487e8f517897/MainActivity" managed-name="CampusRating.MainActivity, CampusRating" managed-type-token-id="33554444" />
+    <entry java-name="crc647120487e8f517897/MainApplication" managed-name="CampusRating.MainApplication, CampusRating" managed-type-token-id="33554445" />
+  </java-to-managed>
+  <managed-to-java>
+    <entry java-name="crc647120487e8f517897/MainActivity" managed-name="CampusRating.MainActivity, CampusRating" managed-type-token-id="33554444" />
+    <entry java-name="crc647120487e8f517897/MainApplication" managed-name="CampusRating.MainApplication, CampusRating" managed-type-token-id="33554445" />
+  </managed-to-java>
+</api>

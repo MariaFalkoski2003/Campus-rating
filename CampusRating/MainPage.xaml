@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CampusRating.MainPage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="#FDFCFF">
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Padding="28,44,28,34"
+                             Spacing="0"
+                             MaximumWidthRequest="560"
+                             HorizontalOptions="Center">
+
+            <Image Source="campus_rating_logo.png"
+                   WidthRequest="68"
+                   HeightRequest="68"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center" />
+
+            <Label Margin="0,22,0,0"
+                   Text="Cadastro do aluno"
+                   TextColor="#25242C"
+                   FontSize="36"
+                   HorizontalTextAlignment="Center" />
+            <Label Margin="0,6,0,38"
+                   Text="Crie sua conta para começar"
+                   TextColor="#898794"
+                   FontSize="17"
+                   HorizontalTextAlignment="Center" />
+
+            <Grid>
+                <Border Margin="0,9,0,0"
+                        HeightRequest="72"
+                        BackgroundColor="White"
+                        Stroke="#D8D6DF"
+                        StrokeShape="RoundRectangle 14">
+                    <Grid Padding="17,0" ColumnDefinitions="28,*" ColumnSpacing="13">
+                        <Image Source="email_outline.png" WidthRequest="23" HeightRequest="23" VerticalOptions="Center" />
+                        <Entry x:Name="EmailEntry"
+                               Grid.Column="1"
+                               VerticalOptions="Center"
+                               HeightRequest="44"
+                               Keyboard="Email"
+                               Placeholder="seu.email@instituicao.edu.br"
+                               PlaceholderColor="#9694A1"
+                               TextColor="#292833"
+                               FontSize="16"
+                               ReturnType="Next"
+                               Completed="OnEmailCompleted" />
+                    </Grid>
+                </Border>
+                <Label Margin="16,0,0,0"
+                       Padding="7,0"
+                       Text="E-mail institucional"
+                       HeightRequest="22"
+                       VerticalOptions="Start"
+                       TextColor="#6555E7"
+                       BackgroundColor="#FDFCFF"
+                       FontSize="14"
+                       HorizontalOptions="Start" />
+            </Grid>
+
+            <Grid Margin="0,25,0,0">
+                <Border Margin="0,9,0,0"
+                        HeightRequest="72"
+                        BackgroundColor="White"
+                        Stroke="#D8D6DF"
+                        StrokeShape="RoundRectangle 14">
+                    <Grid Padding="17,0,8,0" ColumnDefinitions="28,*,46" ColumnSpacing="13">
+                        <Image Source="lock_outline.png" WidthRequest="23" HeightRequest="23" VerticalOptions="Center" />
+                        <Entry x:Name="PasswordEntry"
+                               Grid.Column="1"
+                               VerticalOptions="Center"
+                               HeightRequest="44"
+                               Placeholder="Digite sua senha"
+                               PlaceholderColor="#9694A1"
+                               TextColor="#292833"
+                               FontSize="16"
+                               IsPassword="True"
+                               MaxLength="64"
+                               ReturnType="Next"
+                               Completed="OnPasswordCompleted" />
+                        <ImageButton x:Name="PasswordVisibilityButton"
+                                     Grid.Column="2"
+                                     Source="eye_outline.png"
+                                     VerticalOptions="Center"
+                                     HeightRequest="44"
+                                     BackgroundColor="Transparent"
+                                     Padding="11"
+                                     Clicked="OnTogglePasswordVisibility" />
+                    </Grid>
+                </Border>
+                <Label Margin="16,0,0,0"
+                       Padding="7,0"
+                       Text="Senha"
+                       HeightRequest="22"
+                       VerticalOptions="Start"
+                       TextColor="#6555E7"
+                       BackgroundColor="#FDFCFF"
+                       FontSize="14"
+                       HorizontalOptions="Start" />
+            </Grid>
+
+            <Grid Margin="0,25,0,0">
+                <Border Margin="0,9,0,0"
+                        HeightRequest="72"
+                        BackgroundColor="White"
+                        Stroke="#D8D6DF"
+                        StrokeShape="RoundRectangle 14">
+                    <Grid Padding="17,0,8,0" ColumnDefinitions="28,*,46" ColumnSpacing="13">
+                        <Image Source="lock_outline.png" WidthRequest="23" HeightRequest="23" VerticalOptions="Center" />
+                        <Entry x:Name="ConfirmPasswordEntry"
+                               Grid.Column="1"
+                               VerticalOptions="Center"
+                               HeightRequest="44"
+                               Placeholder="Repita sua senha"
+                               PlaceholderColor="#9694A1"
+                               TextColor="#292833"
+                               FontSize="16"
+                               IsPassword="True"
+                               MaxLength="64"
+                               ReturnType="Done"
+                               Completed="OnConfirmPasswordCompleted" />
+                        <ImageButton x:Name="ConfirmPasswordVisibilityButton"
+                                     Grid.Column="2"
+                                     Source="eye_outline.png"
+                                     VerticalOptions="Center"
+                                     HeightRequest="44"
+                                     BackgroundColor="Transparent"
+                                     Padding="11"
+                                     Clicked="OnToggleConfirmPasswordVisibility" />
+                    </Grid>
+                </Border>
+                <Label Margin="16,0,0,0"
+                       Padding="7,0"
+                       Text="Confirmar senha"
+                       HeightRequest="22"
+                       VerticalOptions="Start"
+                       TextColor="#6555E7"
+                       BackgroundColor="#FDFCFF"
+                       FontSize="14"
+                       HorizontalOptions="Start" />
+            </Grid>
+
+            <Border Margin="0,30,0,0"
+                    Padding="22"
+                    BackgroundColor="#F5F2FF"
+                    Stroke="#D4CCFF"
+                    StrokeShape="RoundRectangle 16">
+                <VerticalStackLayout Spacing="17">
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="14">
+                        <Border WidthRequest="52"
+                                HeightRequest="52"
+                                BackgroundColor="#FCFBFF"
+                                Stroke="#C9C0FF"
+                                StrokeShape="RoundRectangle 26">
+                            <Image Source="campus_rating_logo.png" WidthRequest="34" HeightRequest="34" />
+                        </Border>
+                        <Label Grid.Column="1"
+                               Text="Seu apelido anônimo  ✦"
+                               TextColor="#6252D5"
+                               FontFamily="OpenSansSemibold"
+                               FontSize="16"
+                               VerticalTextAlignment="Center" />
+                    </Grid>
+
+                    <Label x:Name="NicknameLabel"
+                           Text="Coruja Serena 47"
+                           TextColor="#6251D2"
+                           FontSize="31"
+                           LineBreakMode="TailTruncation" />
+
+                    <BoxView HeightRequest="1" Color="#D0CAF3" />
+
+                    <Grid ColumnDefinitions="52,*" ColumnSpacing="14">
+                        <Border WidthRequest="52"
+                                HeightRequest="52"
+                                BackgroundColor="#FCFBFF"
+                                Stroke="#C9C0FF"
+                                StrokeShape="RoundRectangle 26">
+                            <Image Source="dice_outline.png" WidthRequest="26" HeightRequest="26" />
+                        </Border>
+                        <Button Grid.Column="1"
+                                Padding="0"
+                                Text="Sortear novamente"
+                                TextColor="#6252D5"
+                                BackgroundColor="Transparent"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="15"
+                                HorizontalOptions="Start"
+                                Clicked="OnGenerateNickname" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <HorizontalStackLayout Margin="0,22,0,20"
+                                   Spacing="10"
+                                   HorizontalOptions="Center">
+                <Border WidthRequest="30"
+                        HeightRequest="30"
+                        BackgroundColor="#EFECFF"
+                        StrokeThickness="0"
+                        StrokeShape="RoundRectangle 15">
+                    <Image Source="lock_purple.png" WidthRequest="15" HeightRequest="15" />
+                </Border>
+                <Label Text="Seu nome real nunca aparece"
+                       TextColor="#858391"
+                       FontSize="14"
+                       VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+
+            <Border HeightRequest="64"
+                    StrokeThickness="0"
+                    StrokeShape="RoundRectangle 14">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#5A42D7" Offset="0" />
+                        <GradientStop Color="#7B66EA" Offset="1" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Button x:Name="CreateAccountButton"
+                        Text="Criar conta"
+                        TextColor="White"
+                        BackgroundColor="Transparent"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        CornerRadius="14"
+                        Clicked="OnCreateAccountClicked" />
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -104,9 +104,11 @@ public partial class MainPage : ContentPage
             SessaoDoUsuario.Iniciar(resposta);
             _currentNickname = resposta.Usuario.Apelido;
             NicknameLabel.Text = _currentNickname;
+            PasswordEntry.Text = string.Empty;
+            ConfirmPasswordEntry.Text = string.Empty;
 
             await Shell.Current.GoToAsync(
-                $"{nameof(HomePage)}?nickname={Uri.EscapeDataString(_currentNickname)}");
+                $"//{nameof(HomePage)}?nickname={Uri.EscapeDataString(_currentNickname)}");
         }
         catch (ExcecaoDaApi erro)
         {
@@ -165,5 +167,13 @@ public partial class MainPage : ContentPage
         _enviando = enviando;
         CreateAccountButton.IsEnabled = !enviando;
         CreateAccountButton.Text = enviando ? "Criando conta..." : "Criar conta";
+    }
+
+    private async void OnGoToLoginClicked(object? sender, EventArgs e)
+    {
+        if (!_enviando)
+        {
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

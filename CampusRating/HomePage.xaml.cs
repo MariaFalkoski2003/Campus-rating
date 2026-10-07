@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using CampusRating.Servicos;
 
 namespace CampusRating;
 
@@ -35,6 +36,16 @@ public partial class HomePage : ContentPage
         InitializeComponent();
         BindingContext = this;
         UpdatePlaces();
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+
+        if (!SessaoDoUsuario.EstaAutenticado)
+        {
+            await Shell.Current.GoToAsync("//LoginPage");
+        }
     }
 
     private void OnSearchTextChanged(object? sender, TextChangedEventArgs e) => UpdatePlaces();
@@ -96,5 +107,9 @@ public partial class HomePage : ContentPage
         NoticesTabLabel.TextColor = Color.FromArgb(tab == "notices" ? "#8065F1" : "#898794");
     }
 
-    private async void OnBackToRegistrationClicked(object? sender, EventArgs e) => await Shell.Current.GoToAsync("..");
+    private async void OnLogoutClicked(object? sender, EventArgs e)
+    {
+        SessaoDoUsuario.Encerrar();
+        await Shell.Current.GoToAsync("//LoginPage");
+    }
 }

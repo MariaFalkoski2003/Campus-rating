@@ -111,8 +111,8 @@
                         <Label x:Name="NicknameLabel" Text="Seu perfil anônimo" FontSize="24" TextColor="#6251D2" />
                     </VerticalStackLayout>
                 </Border>
-                <Button Text="Voltar ao cadastro" BackgroundColor="#8065F1" TextColor="White"
-                        CornerRadius="14" HeightRequest="52" Clicked="OnBackToRegistrationClicked" />
+                <Button Text="Sair" BackgroundColor="#8065F1" TextColor="White"
+                        CornerRadius="14" HeightRequest="52" Clicked="OnLogoutClicked" />
             </VerticalStackLayout>
         </ScrollView>
 

@@ -227,6 +227,14 @@
                         CornerRadius="14"
                         Clicked="OnCreateAccountClicked" />
             </Border>
+
+            <Button Margin="0,12,0,0"
+                    Text="Já tem uma conta? Entrar"
+                    TextColor="#6252D5"
+                    BackgroundColor="Transparent"
+                    FontSize="15"
+                    HorizontalOptions="Center"
+                    Clicked="OnGoToLoginClicked" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

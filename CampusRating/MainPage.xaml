@@ -8,7 +8,7 @@
     <ScrollView VerticalScrollBarVisibility="Never">
         <VerticalStackLayout Padding="28,44,28,34"
                              Spacing="0"
-                             MaximumWidthRequest="560"
+                             MaximumWidthRequest="720"
                              HorizontalOptions="Center">
 
             <Image Source="campus_rating_logo.png"

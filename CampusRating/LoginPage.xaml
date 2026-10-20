@@ -34,7 +34,7 @@
                    HorizontalTextAlignment="Center"
                    SemanticProperties.HeadingLevel="Level1" />
             <Label Margin="0,4,0,38"
-                   Text="Use seu e-mail institucional"
+                   Text="Utilize seu e-mail institucional."
                    TextColor="#53566B"
                    FontSize="16"
                    HorizontalTextAlignment="Center" />

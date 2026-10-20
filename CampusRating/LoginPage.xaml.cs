@@ -92,7 +92,7 @@ public partial class LoginPage : ContentPage
     {
         if (!_enviando)
         {
-            await Shell.Current.GoToAsync(nameof(MainPage));
+            await Shell.Current.GoToAsync(nameof(SignPage));
         }
     }
 

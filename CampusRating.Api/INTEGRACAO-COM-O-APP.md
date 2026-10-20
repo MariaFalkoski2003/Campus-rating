@@ -45,11 +45,11 @@ Guarda o token em memória por enquanto. É deliberadamente simples: quando o ap
 
 ## Mudanças em arquivos existentes
 
-### `MainPage.xaml`
+### `SignPage.xaml`
 
 Só uma linha: o botão "Criar conta" ganhou `x:Name="CreateAccountButton"`, para que o code-behind consiga desabilitá-lo durante o envio.
 
-### `MainPage.xaml.cs`
+### `SignPage.xaml.cs`
 
 O método que antes se chamava `ValidateRegistrationAsync` virou `RegistrarAsync`. A validação local continua ali — ela dá resposta instantânea, sem ida ao servidor — mas deixou de ser o fim da história:
 

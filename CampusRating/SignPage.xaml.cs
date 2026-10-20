@@ -2,7 +2,7 @@ using CampusRating.Servicos;
 
 namespace CampusRating;
 
-public partial class MainPage : ContentPage
+public partial class SignPage : ContentPage
 {
     private static readonly string[] Animals =
     [
@@ -19,7 +19,7 @@ public partial class MainPage : ContentPage
     private string _currentNickname = "Coruja Serena 47";
     private bool _enviando;
 
-    public MainPage()
+    public SignPage()
     {
         InitializeComponent();
     }
@@ -128,7 +128,7 @@ public partial class MainPage : ContentPage
         out (string Titulo, string Mensagem) problema,
         out Entry? campo)
     {
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@aluno.uricer.edu.br"))
         {
             problema = ("E-mail inválido", "Informe um e-mail institucional válido.");
             campo = EmailEntry;

@@ -8,6 +8,7 @@
              BackgroundColor="#FDFCFF">
     <ContentPage.Resources>
         <Style x:Key="CategoryChip" TargetType="Button">
+            <Setter Property="local:FeedbackDeToque.Ativo" Value="True" />
             <Setter Property="BackgroundColor" Value="White" />
             <Setter Property="TextColor" Value="#7D7B85" />
             <Setter Property="BorderColor" Value="#E5E3EA" />
@@ -23,6 +24,7 @@
         <Grid x:Name="PlacesPanel" RowDefinitions="Auto,*" Padding="22,28,22,0">
             <VerticalStackLayout Spacing="18" Margin="0,0,0,18">
                 <Label Text="Locais do campus" FontSize="31" TextColor="#25242C" />
+                <Label x:Name="LocalCacheInfoLabel" IsVisible="False" FontSize="14" TextColor="#6251D2" />
                 <Border Padding="14,0" HeightRequest="54" BackgroundColor="White"
                         Stroke="#DDD9E4" StrokeShape="RoundRectangle 16">
                     <Grid ColumnDefinitions="24,*" ColumnSpacing="10">
@@ -46,59 +48,70 @@
                     </HorizontalStackLayout>
                 </ScrollView>
             </VerticalStackLayout>
-            <CollectionView Grid.Row="1" ItemsSource="{Binding Places}" SelectionMode="None">
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.EmptyView>
-                    <VerticalStackLayout Padding="16,28" Spacing="8">
-                        <Label Text="Nenhum local encontrado" FontSize="17" TextColor="#6251D2" />
-                        <Label Text="Experimente outro nome ou categoria." FontSize="14" TextColor="#898794" />
-                    </VerticalStackLayout>
-                </CollectionView.EmptyView>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="local:CampusPlace">
-                        <Border Padding="12" Margin="1,0,1,4" Stroke="#EEEBF1"
-                                StrokeShape="RoundRectangle 18" BackgroundColor="White">
-                            <Border.Shadow>
-                                <Shadow Brush="#181421" Offset="0,3" Radius="6" Opacity="0.07" />
-                            </Border.Shadow>
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnPlaceTapped" />
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="96,*" ColumnSpacing="14" MinimumHeightRequest="120">
-                                <Border StrokeThickness="0" StrokeShape="RoundRectangle 12" HeightRequest="120">
-                                    <Image Source="{Binding Image}" Aspect="AspectFill" />
-                                </Border>
-                                <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" RowSpacing="10">
-                                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
-                                        <Label Text="{Binding Name}" FontSize="18" TextColor="#25242C"
-                                               VerticalOptions="Center" />
-                                        <Border Grid.Column="1" Padding="7,5" StrokeThickness="0"
-                                                BackgroundColor="#F1EDFF" StrokeShape="RoundRectangle 12"
-                                                VerticalOptions="Start">
-                                            <HorizontalStackLayout Spacing="4">
-                                                <Image Source="star_purple.png" WidthRequest="13" HeightRequest="13" VerticalOptions="Center" />
-                                                <Label Text="{Binding Rating}" FontSize="13" TextColor="#8065F1" />
-                                            </HorizontalStackLayout>
+            <Grid Grid.Row="1">
+                <VerticalStackLayout x:Name="LoadingPanel" IsVisible="False" Spacing="12"
+                                     Padding="20,36" HorizontalOptions="Center" VerticalOptions="Center">
+                    <ActivityIndicator x:Name="LoadingIndicator" Color="#8065F1" IsRunning="False" />
+                    <Label Text="Carregando os locais..." FontSize="15" TextColor="#6251D2"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+                <VerticalStackLayout x:Name="LoadErrorPanel" IsVisible="False" Spacing="14"
+                                     Padding="20,36" VerticalOptions="Center">
+                    <Label Text="Não foi possível carregar os locais" FontSize="18" TextColor="#25242C"
+                           HorizontalTextAlignment="Center" />
+                    <Label x:Name="LoadErrorLabel" FontSize="14" TextColor="#625F6D"
+                           HorizontalTextAlignment="Center" />
+                    <Button Text="Tentar novamente" BackgroundColor="#8065F1" TextColor="White"
+                            CornerRadius="14" Clicked="OnRetryPlacesClicked" />
+                </VerticalStackLayout>
+                <CollectionView x:Name="PlacesCollection" IsVisible="False" ItemsSource="{Binding Places}" SelectionMode="None">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Padding="16,28" Spacing="8">
+                            <Label Text="Nenhum local encontrado" FontSize="17" TextColor="#6251D2" />
+                            <Label Text="Experimente outro nome ou categoria." FontSize="14" TextColor="#625F6D" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:CampusPlace">
+                            <Border Padding="12" Margin="1,0,1,4" Stroke="#EEEBF1"
+                                    StrokeShape="RoundRectangle 18" BackgroundColor="White">
+                                <Border.Shadow>
+                                    <Shadow Brush="#181421" Offset="0,3" Radius="6" Opacity="0.07" />
+                                </Border.Shadow>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnPlaceTapped" />
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="96,*" ColumnSpacing="14" MinimumHeightRequest="120">
+                                    <Border StrokeThickness="0" StrokeShape="RoundRectangle 12" HeightRequest="120">
+                                        <Image Source="{Binding Image}" Aspect="AspectFill" />
+                                    </Border>
+                                    <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="8">
+                                        <Label Text="{Binding Name}" FontSize="18" TextColor="#25242C" />
+                                        <Grid Grid.Row="1" ColumnDefinitions="12,*" ColumnSpacing="5">
+                                            <Image Source="location_gray.png" WidthRequest="11" HeightRequest="14" VerticalOptions="Start" />
+                                            <Label Grid.Column="1" Text="{Binding Location}" FontSize="12" TextColor="#625F6D" />
+                                        </Grid>
+                                        <Label Grid.Row="2" Text="{Binding Description}" FontSize="13"
+                                               TextColor="#625F6D" VerticalOptions="End" />
+                                        <Border Grid.Row="3" Padding="8,4" StrokeThickness="0"
+                                                BackgroundColor="#F1EDFF" StrokeShape="RoundRectangle 10"
+                                                HorizontalOptions="Start">
+                                            <Label Text="{Binding CommentsText}" FontSize="12" TextColor="#6251D2" />
                                         </Border>
                                     </Grid>
-                                    <Grid Grid.Row="1" ColumnDefinitions="12,*" ColumnSpacing="5">
-                                        <Image Source="location_gray.png" WidthRequest="11" HeightRequest="14" VerticalOptions="Start" />
-                                        <Label Grid.Column="1" Text="{Binding Location}" FontSize="12" TextColor="#98959F" />
-                                    </Grid>
-                                    <Label Grid.Row="2" Text="{Binding Description}" FontSize="12"
-                                           TextColor="#98959F" VerticalOptions="End" />
                                 </Grid>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-                <CollectionView.Footer>
-                    <Label Text="Locais e notas de exemplo" FontSize="11" TextColor="#A6A1B1"
-                           HorizontalTextAlignment="Center" Margin="0,12,0,18" />
-                </CollectionView.Footer>
-            </CollectionView>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.Footer>
+                        <Label Text="Locais predefinidos do campus" FontSize="12" TextColor="#625F6D"
+                               HorizontalTextAlignment="Center" Margin="0,12,0,18" />
+                    </CollectionView.Footer>
+                </CollectionView>
+            </Grid>
         </Grid>
 
         <ScrollView x:Name="ProfilePanel" IsVisible="False">
@@ -109,23 +122,80 @@
                         <Image Source="campus_rating_logo.png" WidthRequest="64" HeightRequest="64" HorizontalOptions="Start" />
                         <Label Text="Seu apelido" FontSize="13" TextColor="#898794" />
                         <Label x:Name="NicknameLabel" Text="Seu perfil anônimo" FontSize="24" TextColor="#6251D2" />
+                        <Label Text="E-mail institucional (visível somente para você)" FontSize="13" TextColor="#625F6D" />
+                        <Label x:Name="EmailLabel" FontSize="16" TextColor="#25242C" LineBreakMode="WordWrap" />
                     </VerticalStackLayout>
                 </Border>
+                <Label Text="Dados da conta" FontSize="21" TextColor="#25242C" />
+                <Button Text="Editar e-mail" BackgroundColor="#F1EDFF" TextColor="#6251D2" Clicked="OnEditEmailClicked" />
+                <Button Text="Alterar senha" BackgroundColor="#F1EDFF" TextColor="#6251D2" Clicked="OnChangePasswordClicked" />
+                <Button Text="Meus relatos" BackgroundColor="#8065F1" TextColor="White" Clicked="OnMyReportsClicked" />
+                <VerticalStackLayout x:Name="MyReportsPanel" IsVisible="False" Spacing="12">
+                    <Label Text="Meus relatos" FontSize="21" TextColor="#25242C" />
+                    <Label Text="Consulte seus relatos e acompanhe as respostas. Os filtros mostram o andamento."
+                           FontSize="14" TextColor="#625F6D" />
+                    <VerticalStackLayout RadioButtonGroup.GroupName="FiltroMeusRelatos" Spacing="2">
+                        <RadioButton Content="Todos" Value="todos" IsChecked="True" TextColor="#25242C" CheckedChanged="OnReportFilterChanged" />
+                        <RadioButton Content="Pendentes" Value="pendente" TextColor="#25242C" CheckedChanged="OnReportFilterChanged" />
+                        <RadioButton Content="Em análise" Value="em_analise" TextColor="#25242C" CheckedChanged="OnReportFilterChanged" />
+                        <RadioButton Content="Resolvidos" Value="resolvido" TextColor="#25242C" CheckedChanged="OnReportFilterChanged" />
+                    </VerticalStackLayout>
+                    <Label x:Name="MyReportsMessageLabel" TextColor="#625F6D" FontSize="14" />
+                    <Button Text="Atualizar meus relatos" BackgroundColor="Transparent" TextColor="#6251D2" Clicked="OnMyReportsClicked" />
+                    <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding MeusRelatos}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:RelatoDoAluno">
+                                <Border Padding="16" Stroke="#E5E1EC" StrokeShape="RoundRectangle 14" BackgroundColor="White">
+                                    <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnMyReportTapped" /></Border.GestureRecognizers>
+                                    <VerticalStackLayout Spacing="8">
+                                        <Label Text="{Binding LocalNome}" FontSize="17" TextColor="#25242C" />
+                                        <Label Text="{Binding DataTexto}" FontSize="13" TextColor="#625F6D" />
+                                        <Label Text="{Binding Texto}" FontSize="15" TextColor="#4F4B59" MaxLines="3" LineBreakMode="TailTruncation" />
+                                        <Label Text="{Binding StatusTexto}" FontSize="14" TextColor="#6251D2" />
+                                        <Label Text="Toque para consultar o relato e as respostas" FontSize="13" TextColor="#6251D2" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+                <Button Text="Regras da plataforma e uso dos dados" BackgroundColor="#F1EDFF" TextColor="#6251D2" Clicked="OnRulesClicked" />
+                <Button Text="Excluir conta" BackgroundColor="Transparent" TextColor="#A1283B" Clicked="OnDeleteAccountClicked" />
                 <Button Text="Sair" BackgroundColor="#8065F1" TextColor="White"
                         CornerRadius="14" HeightRequest="52" Clicked="OnLogoutClicked" />
             </VerticalStackLayout>
         </ScrollView>
 
-        <VerticalStackLayout x:Name="NoticesPanel" IsVisible="False" Padding="24,28" Spacing="24">
-            <Label Text="Avisos" FontSize="31" TextColor="#25242C" />
-            <Border Padding="28" BackgroundColor="White" Stroke="#EEEBF1" StrokeShape="RoundRectangle 18">
-                <VerticalStackLayout Spacing="12">
-                    <Image Source="bell_gray.png" WidthRequest="36" HeightRequest="36" />
-                    <Label Text="Nenhum aviso por enquanto" FontSize="18" TextColor="#6251D2" HorizontalTextAlignment="Center" />
-                    <Label Text="Os avisos da comunidade aparecerão aqui." FontSize="14" TextColor="#898794" HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </Border>
-        </VerticalStackLayout>
+        <Grid x:Name="NoticesPanel" IsVisible="False" Padding="24,28" RowDefinitions="Auto,Auto,*" RowSpacing="16">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Avisos" FontSize="31" TextColor="#25242C" />
+                <Button Grid.Column="1" Text="Atualizar" BackgroundColor="Transparent" TextColor="#6251D2" Clicked="OnRefreshNoticesClicked" />
+            </Grid>
+            <Label x:Name="NoticesMessageLabel" Grid.Row="1" FontSize="14" TextColor="#625F6D" />
+            <CollectionView x:Name="NoticesCollection" Grid.Row="2" ItemsSource="{Binding Avisos}" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="12,28" Spacing="12">
+                        <Image Source="bell_gray.png" WidthRequest="36" HeightRequest="36" />
+                        <Label Text="Nenhum aviso por enquanto" FontSize="18" TextColor="#6251D2" HorizontalTextAlignment="Center" />
+                        <Label Text="As respostas da administração aos seus relatos aparecerão aqui." FontSize="14" TextColor="#625F6D" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:AvisoDoAluno">
+                        <Border Padding="16" Margin="0,0,0,12" Stroke="#E5E1EC" StrokeShape="RoundRectangle 14" BackgroundColor="White">
+                            <Border.GestureRecognizers><TapGestureRecognizer Tapped="OnNoticeTapped" /></Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="8">
+                                <Label Text="{Binding LeituraTexto}" FontSize="13" TextColor="#6251D2" />
+                                <Label Text="{Binding LocalNome}" FontSize="18" TextColor="#25242C" />
+                                <Label Text="{Binding Texto}" FontSize="15" TextColor="#4F4B59" MaxLines="3" LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding DataTexto}" FontSize="13" TextColor="#625F6D" />
+                                <Label Text="Abrir relato e resposta" FontSize="13" TextColor="#6251D2" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
 
         <Grid Grid.Row="1" RowDefinitions="1,76" BackgroundColor="White">
             <BoxView Color="#EEEBF1" HeightRequest="1" />

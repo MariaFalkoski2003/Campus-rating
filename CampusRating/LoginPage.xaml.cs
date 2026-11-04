@@ -12,6 +12,22 @@ public partial class LoginPage : ContentPage
         InitializeComponent();
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        DefinirEstadoDeEnvio(true);
+        try
+        {
+            await SessaoDoUsuario.RestaurarAsync();
+            if (SessaoDoUsuario.EstaAutenticado)
+                await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
+            else if (SessaoDoUsuario.Token is not null)
+                await SessaoDoUsuario.EncerrarAsync();
+        }
+        catch (ExcecaoDaApi erro) { await DisplayAlertAsync("Armazenamento local", erro.Message, "Entendi"); }
+        finally { DefinirEstadoDeEnvio(false); }
+    }
+
     private void OnEmailCompleted(object? sender, EventArgs e)
     {
         PasswordEntry.Focus();
@@ -42,29 +58,33 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        var email = EmailEntry.Text?.Trim() ?? string.Empty;
-        var senha = PasswordEntry.Text ?? string.Empty;
-
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@aluno.uricer.edu.br"))
-        {
-            await DisplayAlertAsync("E-mail inválido", "Informe seu e-mail institucional.", "Entendi");
-            EmailEntry.Focus();
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(senha))
-        {
-            await DisplayAlertAsync("Senha necessária", "Digite sua senha para continuar.", "Entendi");
-            PasswordEntry.Focus();
-            return;
-        }
-
-        DefinirEstadoDeEnvio(true);
-
+        _enviando = true;
         try
         {
+            // Aguarda o efeito na borda com degradê antes de desabilitar o botão.
+            await FeedbackDeToque.AnimarToqueAsync(LoginButton.Parent);
+
+            var email = EmailEntry.Text?.Trim() ?? string.Empty;
+            var senha = PasswordEntry.Text ?? string.Empty;
+
+            if (!EmailInstitucional.EhValido(email))
+            {
+                await DisplayAlertAsync("E-mail inválido", EmailInstitucional.MensagemDeErro, "Entendi");
+                EmailEntry.Focus();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(senha))
+            {
+                await DisplayAlertAsync("Senha necessária", "Digite sua senha para continuar.", "Entendi");
+                PasswordEntry.Focus();
+                return;
+            }
+
+            DefinirEstadoDeEnvio(true);
+
             var resposta = await _api.EntrarAsync(email, senha);
-            SessaoDoUsuario.Iniciar(resposta);
+            await SessaoDoUsuario.IniciarAsync(resposta);
             PasswordEntry.Text = string.Empty;
 
             await Shell.Current.GoToAsync(
@@ -94,14 +114,6 @@ public partial class LoginPage : ContentPage
         {
             await Shell.Current.GoToAsync(nameof(SignPage));
         }
-    }
-
-    private async void OnForgotPasswordClicked(object? sender, EventArgs e)
-    {
-        await DisplayAlertAsync(
-            "Recuperar senha",
-            "A recuperação de senha ainda não está disponível.",
-            "Entendi");
     }
 
     private void DefinirEstadoDeEnvio(bool enviando)

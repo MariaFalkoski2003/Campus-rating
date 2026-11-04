@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:CampusRating"
+             x:Class="CampusRating.DetalhesLocalPage"
+             x:DataType="local:DetalhesLocalPage"
+             Title="Detalhes do local" Shell.NavBarIsVisible="False"
+             BackgroundColor="#FDFCFF">
+    <Grid RowDefinitions="Auto,*,Auto" MaximumWidthRequest="720" HorizontalOptions="Fill">
+        <Grid ColumnDefinitions="Auto,*" Padding="14,14,22,8" ColumnSpacing="12">
+            <Button Text="Voltar" TextColor="#6251D2" BackgroundColor="Transparent"
+                    Clicked="OnBackClicked" />
+            <Label Grid.Column="1" Text="Detalhes do local" FontSize="20" TextColor="#25242C"
+                   VerticalOptions="Center" />
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <VerticalStackLayout x:Name="LoadingPanel" Spacing="12" Padding="22,36"
+                                 VerticalOptions="Center" HorizontalOptions="Center">
+                <ActivityIndicator x:Name="LoadingIndicator" Color="#8065F1" />
+                <Label Text="Carregando o local..." FontSize="15" TextColor="#6251D2" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout x:Name="LoadErrorPanel" IsVisible="False" Spacing="14"
+                                 Padding="22,36" VerticalOptions="Center">
+                <Label Text="Não foi possível carregar o local" FontSize="20" TextColor="#25242C"
+                       HorizontalTextAlignment="Center" />
+                <Label x:Name="LoadErrorLabel" FontSize="15" TextColor="#625F6D"
+                       HorizontalTextAlignment="Center" />
+                <Button Text="Tentar novamente" BackgroundColor="#8065F1" TextColor="White"
+                        CornerRadius="14" Clicked="OnRetryClicked" />
+            </VerticalStackLayout>
+
+            <CollectionView x:Name="CommentsCollection" IsVisible="False"
+                            ItemsSource="{Binding Comentarios}" SelectionMode="None">
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="22,8,22,20" Spacing="16">
+                        <Label x:Name="LocalCacheInfoLabel" IsVisible="False" FontSize="14" TextColor="#6251D2" />
+                        <Border StrokeThickness="0" StrokeShape="RoundRectangle 18" HeightRequest="220">
+                            <Image x:Name="LocalImage" Aspect="AspectFill" />
+                        </Border>
+                        <Label Text="Imagem ilustrativa" FontSize="12" TextColor="#625F6D" />
+                        <Label x:Name="LocalNameLabel" FontSize="30" TextColor="#25242C"
+                               SemanticProperties.HeadingLevel="Level1" />
+                        <Border Padding="10,6" BackgroundColor="#F1EDFF" StrokeThickness="0"
+                                StrokeShape="RoundRectangle 10" HorizontalOptions="Start">
+                            <Label x:Name="LocalCategoryLabel" FontSize="14" TextColor="#6251D2" />
+                        </Border>
+                        <HorizontalStackLayout Spacing="8">
+                            <Image Source="location_gray.png" WidthRequest="16" HeightRequest="18" />
+                            <Label x:Name="LocalLocationLabel" FontSize="14" TextColor="#625F6D" />
+                        </HorizontalStackLayout>
+                        <Label x:Name="LocalDescriptionLabel" FontSize="16" TextColor="#4F4B59" />
+                        <Label x:Name="CommentsCountLabel" FontSize="21" TextColor="#25242C"
+                               Margin="0,8,0,0" SemanticProperties.HeadingLevel="Level2" />
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout Padding="22,12,22,24" Spacing="8">
+                        <Label Text="Ainda não há comentários" FontSize="18" TextColor="#6251D2" />
+                        <Label Text="Os relatos publicados sobre este espaço aparecerão aqui."
+                               FontSize="14" TextColor="#625F6D" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="local:ComentarioDoLocal">
+                        <Border Margin="22,0,22,14" Padding="16" BackgroundColor="White"
+                                Stroke="#E5E1EC" StrokeShape="RoundRectangle 16">
+                            <VerticalStackLayout Spacing="10">
+                                <Label Text="{Binding Apelido}" FontSize="16" TextColor="#25242C"
+                                       FontAttributes="Bold" />
+                                <Label Text="{Binding DataTexto}" FontSize="13" TextColor="#625F6D" />
+                                <Label Text="{Binding Texto}" FontSize="15" TextColor="#4F4B59" />
+                                <Border Padding="8,4" BackgroundColor="#F1EDFF" StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 8" HorizontalOptions="Start">
+                                    <Label Text="{Binding StatusTexto}" FontSize="13" TextColor="#6251D2" />
+                                </Border>
+                                <Label Text="{Binding RespostasTexto}" IsVisible="{Binding TemRespostas}"
+                                       FontSize="15" TextColor="#4F4B59" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+
+        <VerticalStackLayout x:Name="SendPanel" Grid.Row="2" IsVisible="False"
+                             Padding="22,12,22,18" Spacing="8" BackgroundColor="White">
+            <Button Text="Enviar relato" BackgroundColor="#8065F1"
+                    TextColor="White" CornerRadius="14" HeightRequest="50" Clicked="OnSendReportClicked" />
+            <Label Text="Seu relato será publicado com seu apelido e começará como Pendente."
+                   FontSize="13" TextColor="#625F6D" HorizontalTextAlignment="Center" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

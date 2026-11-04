@@ -3,7 +3,7 @@ import { configuracao } from '../configuracao.js';
 import { erroDeAutenticacao } from '../erros.js';
 
 export const gerarToken = (usuario) =>
-  jwt.sign({ apelido: usuario.apelido }, configuracao.segredoDoToken, {
+  jwt.sign({ apelido: usuario.apelido, versao: usuario.versao_token ?? 0 }, configuracao.segredoDoToken, {
     subject: String(usuario.id),
     expiresIn: configuracao.validadeDoToken,
   });

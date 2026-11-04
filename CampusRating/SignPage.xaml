@@ -8,7 +8,7 @@
     <ScrollView VerticalScrollBarVisibility="Never">
         <VerticalStackLayout Padding="28,44,28,34"
                              Spacing="0"
-                             MaximumWidthRequest="720"
+                             MaximumWidthRequest="560"
                              HorizontalOptions="Center">
 
             <Image Source="campus_rating_logo.png"
@@ -41,7 +41,7 @@
                                VerticalOptions="Center"
                                HeightRequest="44"
                                Keyboard="Email"
-                               Placeholder="seu.email@instituicao.edu.br"
+                               Placeholder="seu.email@aluno.uricer.edu.br"
                                PlaceholderColor="#9694A1"
                                TextColor="#292833"
                                FontSize="16"
@@ -208,6 +208,17 @@
                        FontSize="14"
                        VerticalTextAlignment="Center" />
             </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8" Margin="0,0,0,18">
+                <CheckBox x:Name="RulesCheckBox" Color="#6251D2"
+                          SemanticProperties.Description="Aceito as regras da plataforma" />
+                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="0">
+                    <Label Text="Li e aceito as regras da plataforma." FontSize="14" TextColor="#4F4B59" />
+                    <Button Text="Ler regras e uso dos dados" BackgroundColor="Transparent"
+                            TextColor="#6251D2" HorizontalOptions="Start" Padding="0"
+                            Clicked="OnRulesClicked" />
+                </VerticalStackLayout>
+            </Grid>
 
             <Border HeightRequest="64"
                     StrokeThickness="0"

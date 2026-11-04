@@ -2,8 +2,8 @@ namespace CampusRating.Servicos;
 
 public sealed class ExcecaoDaApi : Exception
 {
-    public ExcecaoDaApi(string codigo, string mensagem, string? campo = null)
-        : base(mensagem)
+    public ExcecaoDaApi(string codigo, string mensagem, string? campo = null, Exception? origem = null)
+        : base(mensagem, origem)
     {
         Codigo = codigo;
         Campo = campo;
@@ -15,6 +15,6 @@ public sealed class ExcecaoDaApi : Exception
 
     public static ExcecaoDaApi SemConexao(Exception origem) => new(
         "sem_conexao",
-        $"Nao foi possivel falar com o servidor em {ConfiguracaoDaApi.EnderecoBase}. Verifique se a API esta rodando.",
-        null);
+        "Não foi possível conectar ao servidor. Tente novamente.",
+        origem: origem);
 }

@@ -1,5 +1,7 @@
 import express from 'express';
 import { rotasDeAutenticacao } from './rotas/autenticacao.js';
+import { rotasDeLocais } from './rotas/locais.js';
+import { rotasDeRelatos, rotasDeAvisos } from './rotas/relatos.js';
 import { rotaNaoEncontrada, tratarErros } from './middlewares/tratarErros.js';
 
 export const criarAplicacao = () => {
@@ -12,6 +14,9 @@ export const criarAplicacao = () => {
   });
 
   aplicacao.use('/auth', rotasDeAutenticacao);
+  aplicacao.use('/locais', rotasDeLocais);
+  aplicacao.use('/relatos', rotasDeRelatos);
+  aplicacao.use('/avisos', rotasDeAvisos);
 
   aplicacao.use(rotaNaoEncontrada);
   aplicacao.use(tratarErros);

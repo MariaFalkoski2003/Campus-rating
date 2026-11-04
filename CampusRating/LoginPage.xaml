@@ -133,13 +133,6 @@
                         Clicked="OnCreateAccountClicked" />
             </HorizontalStackLayout>
 
-            <Button Margin="0,10,0,0"
-                    Text="Esqueci minha senha"
-                    TextColor="#6A55DE"
-                    BackgroundColor="Transparent"
-                    FontSize="15"
-                    HorizontalOptions="Center"
-                    Clicked="OnForgotPasswordClicked" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

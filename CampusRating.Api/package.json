@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node src/servidor.js",
     "dev": "node --watch src/servidor.js",
-    "migrar": "node src/banco/migrar.js"
+    "migrar": "node src/banco/migrar.js",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=20"

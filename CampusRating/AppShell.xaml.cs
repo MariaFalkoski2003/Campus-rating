@@ -6,6 +6,7 @@ namespace CampusRating
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(SignPage), typeof(SignPage));
+            Routing.RegisterRoute(nameof(DetalhesLocalPage), typeof(DetalhesLocalPage));
         }
     }
 }

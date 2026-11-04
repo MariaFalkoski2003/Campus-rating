@@ -99,9 +99,9 @@ public partial class SignPage : ContentPage
 
         try
         {
-            var resposta = await _api.RegistrarAsync(email, password, confirmation, _currentNickname);
+            var resposta = await _api.RegistrarAsync(email, password, confirmation, _currentNickname, RulesCheckBox.IsChecked);
 
-            SessaoDoUsuario.Iniciar(resposta);
+            await SessaoDoUsuario.IniciarAsync(resposta);
             _currentNickname = resposta.Usuario.Apelido;
             NicknameLabel.Text = _currentNickname;
             PasswordEntry.Text = string.Empty;
@@ -128,14 +128,14 @@ public partial class SignPage : ContentPage
         out (string Titulo, string Mensagem) problema,
         out Entry? campo)
     {
-        if (string.IsNullOrWhiteSpace(email) || !email.Contains("@aluno.uricer.edu.br"))
+        if (!EmailInstitucional.EhValido(email))
         {
-            problema = ("E-mail inválido", "Informe um e-mail institucional válido.");
+            problema = ("E-mail inválido", EmailInstitucional.MensagemDeErro);
             campo = EmailEntry;
             return false;
         }
 
-        if (password.Length < 6)
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
         {
             problema = ("Senha muito curta", "A senha deve ter pelo menos 6 caracteres.");
             campo = PasswordEntry;
@@ -144,8 +144,15 @@ public partial class SignPage : ContentPage
 
         if (!string.Equals(password, confirmation, StringComparison.Ordinal))
         {
-            problema = ("Senhas diferentes", "A confirmação deve ser igual à senha.");
+            problema = ("Senhas diferentes", "As senhas informadas não coincidem.");
             campo = ConfirmPasswordEntry;
+            return false;
+        }
+
+        if (!RulesCheckBox.IsChecked)
+        {
+            problema = ("Aceite necessário", "Leia e aceite as regras da plataforma para criar sua conta.");
+            campo = null;
             return false;
         }
 
@@ -167,6 +174,12 @@ public partial class SignPage : ContentPage
         _enviando = enviando;
         CreateAccountButton.IsEnabled = !enviando;
         CreateAccountButton.Text = enviando ? "Criando conta..." : "Criar conta";
+        RulesCheckBox.IsEnabled = !enviando;
+    }
+
+    private async void OnRulesClicked(object? sender, EventArgs e)
+    {
+        if (!_enviando) await ModaisDaPlataforma.MostrarRegrasAsync(this);
     }
 
     private async void OnGoToLoginClicked(object? sender, EventArgs e)

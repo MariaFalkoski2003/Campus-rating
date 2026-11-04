@@ -1,8 +1,17 @@
 import { Router } from 'express';
-import { entrar, perfilDoUsuario, registrar } from '../servicos/autenticacao.js';
+import { entrar, perfilDoUsuario, registrar, alterarEmail, alterarSenha, excluirConta } from '../servicos/autenticacao.js';
 import { exigirAutenticacao } from '../middlewares/exigirAutenticacao.js';
 
 export const rotasDeAutenticacao = Router();
+
+for (const [metodo, caminho, acao] of [
+  ['patch', '/eu/email', alterarEmail], ['patch', '/eu/senha', alterarSenha], ['delete', '/eu', excluirConta],
+]) {
+  rotasDeAutenticacao[metodo](caminho, exigirAutenticacao, (requisicao, resposta, proximo) => {
+    try { resposta.json(acao(requisicao.usuarioId, requisicao.body ?? {})); }
+    catch (erro) { proximo(erro); }
+  });
+}
 
 rotasDeAutenticacao.post('/registro', (requisicao, resposta, proximo) => {
   try {

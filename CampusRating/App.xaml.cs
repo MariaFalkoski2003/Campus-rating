@@ -10,6 +10,7 @@ namespace CampusRating
         public App()
         {
             InitializeComponent();
+            UserAppTheme = AppTheme.Light;
 
             Microsoft.Maui.Handlers.WindowHandler.Mapper.AppendToMapping(nameof(IWindow), (handler, view) =>
             {
@@ -26,7 +27,7 @@ namespace CampusRating
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell()) { Title = "Campus Rating" };
+            return new Window(Servicos.NavegacaoDoAplicativo.CriarLogin()) { Title = "Campus Rating" };
         }
     }
 }

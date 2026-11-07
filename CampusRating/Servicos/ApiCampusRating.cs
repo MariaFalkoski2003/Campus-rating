@@ -28,6 +28,9 @@ public sealed class ApiCampusRating
     public Task<RespostaDeAutenticacao> EntrarAsync(string email, string senha)
         => EnviarAutenticacaoAsync("/auth/login", new PedidoDeLogin(email, senha));
 
+    public Task<RespostaDeAutenticacao> EntrarAdministradorAsync(string email, string senha)
+        => EnviarAutenticacaoAsync("/auth/admin/login", new PedidoDeLogin(email, senha));
+
     public Task<RespostaDeAutenticacao> AlterarEmailAsync(string email, string senhaAtual)
         => EnviarComSessaoAsync<RespostaDeAutenticacao>(HttpMethod.Patch, "/auth/eu/email", new { email, senhaAtual });
 
@@ -51,6 +54,20 @@ public sealed class ApiCampusRating
 
     public Task<MensagemDaApi> MarcarAvisoLidoAsync(int avisoId)
         => EnviarComSessaoAsync<MensagemDaApi>(HttpMethod.Patch, $"/avisos/{avisoId}/lido");
+
+    public Task<RespostaDeMeusRelatos> ListarRelatosAdministrativosAsync()
+        => EnviarComSessaoAsync<RespostaDeMeusRelatos>(HttpMethod.Get, "/admin/relatos");
+
+    public Task<RespostaDeRelato> ObterRelatoAdministrativoAsync(int relatoId)
+        => EnviarComSessaoAsync<RespostaDeRelato>(HttpMethod.Get, $"/admin/relatos/{relatoId}");
+
+    public Task<RespostaDeRelato> AlterarStatusDoRelatoAsync(int relatoId, string status, string statusAnterior)
+        => EnviarComSessaoAsync<RespostaDeRelato>(HttpMethod.Patch, $"/admin/relatos/{relatoId}/status", new { status, statusAnterior });
+
+    public Task<RespostaDeRelato> ResponderRelatoAsync(int relatoId, string texto, string chaveEnvio,
+        string? status = null, string? statusAnterior = null)
+        => EnviarComSessaoAsync<RespostaDeRelato>(HttpMethod.Post, $"/admin/relatos/{relatoId}/respostas",
+            status is null ? new { texto, chaveEnvio } : (object)new { texto, chaveEnvio, status, statusAnterior });
 
     private async Task<T> EnviarComSessaoAsync<T>(HttpMethod metodo, string caminho, object? corpo = null) where T : class
     {

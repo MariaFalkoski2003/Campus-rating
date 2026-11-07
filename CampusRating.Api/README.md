@@ -222,7 +222,40 @@ Alterar e-mail ou senha invalida os tokens anteriores. O aplicativo usa o novo t
 
 O formulário de exclusão informa que os relatos e as respostas vinculadas serão removidos, pede confirmação e exige a senha atual. Os dados dos demais alunos e os locais predefinidos são preservados.
 
-A consulta de respostas e avisos está pronta. A área administrativa para produzir respostas e alterar andamentos ainda será implementada. Nenhum aviso fictício é gerado.
+A administração responde aos relatos e altera seus andamentos pelas rotas protegidas abaixo. As respostas aparecem nas consultas e nos avisos existentes do aluno.
+
+### Área administrativa
+
+O aplicativo tem uma tela de login para alunos e outra para administradores, com o mesmo estilo visual. Os botões no final das telas mostram **É um administrador?** e **É um aluno?** para alternar o acesso. O login administrativo abre diretamente o painel de relatos, com a opção Sair para retornar ao login administrativo.
+
+Ao iniciar a API, a conta inicial `admin@uricer.edu.br` com senha `admin` é criada automaticamente com a senha protegida por hash. A inicialização conserva a senha e a permissão caso essa conta já exista. A autenticação administrativa utiliza `POST /auth/admin/login`, recebe `{ "email": "admin@uricer.edu.br", "senha": "admin" }` e exige o perfil administrativo. O login e o cadastro dos alunos continuam exigindo o domínio `aluno.uricer.edu.br`.
+
+O campo `papel` do usuário identifica `aluno` ou `administrador`. Cada requisição administrativa confere a permissão atual no banco do servidor. O cadastro público sempre cria alunos.
+
+Para habilitar uma conta já cadastrada, execute dentro de `CampusRating.Api`, substituindo o e-mail pelo da conta desejada.
+
+```powershell
+npm run administrador -- email@aluno.uricer.edu.br
+```
+
+Para remover a permissão, execute o mesmo comando com `--remover`.
+
+```powershell
+npm run administrador -- email@aluno.uricer.edu.br --remover
+```
+
+A mudança de perfil invalida as sessões anteriores. Após habilitar outra conta, saia e entre pela tela administrativa. Reinicie a API após atualizar o código para carregar as novas rotas, aplicar a migração e preparar a conta inicial.
+
+| Método e caminho | Corpo / resultado |
+|---|---|
+| `GET /admin/relatos` | Lista todos os relatos com o apelido do autor. O painel filtra por andamento. |
+| `GET /admin/relatos/:id` | Relato completo e suas respostas. |
+| `PATCH /admin/relatos/:id/status` | `{ "status": "em_analise", "statusAnterior": "pendente" }`. Aceita `pendente`, `em_analise` e `resolvido`. Retorna o relato atualizado. |
+| `POST /admin/relatos/:id/respostas` | `{ "texto": "Resposta da administração.", "chaveEnvio": "UUID do envio" }`. Retorna o relato com as respostas. Limite de 2.000 caracteres. |
+
+Sem autenticação, essas rotas retornam `401`. Contas de alunos recebem `403`. Um andamento alterado por outra pessoa recebe `409` e exige atualizar a tela. Repetir o mesmo envio com a mesma chave e conteúdo retorna a resposta já registrada, conservando um único aviso ao aluno. O aplicativo mantém essa chave ao tentar novamente após uma falha de conexão.
+
+A migração adiciona o perfil às contas existentes com o valor inicial `aluno` e uma chave opcional de envio às respostas. Contas, relatos e respostas anteriores são preservados. As consultas administrativas dependem da API.
 
 ### Formato dos erros
 
@@ -279,7 +312,7 @@ Uma observação importante para a documentação do trabalho: o documento descr
 ## 6. Próximos passos sugeridos
 
 1. Guardar o token no dispositivo com `SecureStorage` para a pessoa não precisar entrar toda vez.
-2. Implementar a área administrativa, as respostas e a alteração dos estados `pendente`, `em_analise` e `resolvido`.
+2. Conferir a área administrativa no dispositivo com uma conta habilitada no servidor.
 3. Organizar gradualmente a aplicação em MVVM e revisar a navegação exigida na disciplina.
 4. Incluir o SQLite no app (`sqlite-net-pcl`) como cache das listas, fechando o uso descrito no item 4.5.
 5. Montar a coleção do Postman com essas rotas para usar como evidência de teste no trabalho.

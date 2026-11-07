@@ -13,6 +13,7 @@ process.env.DOMINIOS_PERMITIDOS = 'gmail.com';
 const { criarAplicacao } = await import('../src/aplicacao.js');
 const { banco } = await import('../src/banco/conexao.js');
 const { repositorioDeUsuarios } = await import('../src/banco/repositorioDeUsuarios.js');
+const { prepararAdministradorInicial } = await import('../src/servicos/autenticacao.js');
 
 let servidor;
 let endereco;
@@ -216,4 +217,49 @@ test('cadastros com o mesmo apelido recebem identificações distintas e persist
   assert.equal(primeiro.corpo.usuario.apelido, apelido);
   assert.notEqual(segundo.corpo.usuario.apelido, apelido);
   assert.equal(repositorioDeUsuarios.porId(segundo.corpo.usuario.id).apelido, segundo.corpo.usuario.apelido);
+});
+
+test('login administrativo aceita a conta inicial e rejeita senha incorreta e contas de alunos', async () => {
+  prepararAdministradorInicial();
+  const usuario = repositorioDeUsuarios.porEmail('admin@uricer.edu.br');
+  assert.equal(usuario.papel, 'administrador');
+  assert.notEqual(usuario.senha_hash, 'admin');
+  assert.ok(bcrypt.compareSync('admin', usuario.senha_hash));
+  const login = await enviar('admin/login', '  ADMIN@URICER.EDU.BR  ', { senha: 'admin' });
+  assert.equal(login.status, 200);
+  assert.equal(login.corpo.usuario.id, usuario.id);
+  assert.equal(login.corpo.usuario.papel, 'administrador');
+  assert.equal(login.corpo.usuario.senha_hash, undefined);
+  const painel = await fetch(endereco + '/admin/relatos', { headers: { Authorization: `Bearer ${login.corpo.token}` } });
+  assert.equal(painel.status, 200);
+  await painel.json();
+  for (const [email, senha] of [
+    ['admin@uricer.edu.br', 'errada'], ['admin@uricer.edu.br', ''],
+    ['inexistente@uricer.edu.br', 'admin'], ['maria@aluno.uricer.edu.br', 'senha123'],
+  ]) {
+    const resposta = await enviar('admin/login', email, { senha, papel: 'administrador' });
+    assert.equal(resposta.status, 401);
+    assert.equal(resposta.corpo.erro.codigo, 'credenciais_invalidas');
+    assert.equal(resposta.corpo.token, undefined);
+  }
+  assert.equal((await enviar('admin/login', 'email-invalido', { senha: 'admin' })).status, 400);
+  assert.equal((await enviar('login', 'admin@uricer.edu.br', { senha: 'admin' })).status, 400);
+  assert.equal((await enviar('registro', 'admin@uricer.edu.br', { senha: 'admin', papel: 'administrador' })).status, 400);
+});
+
+test('reiniciar a preparação da conta administrativa conserva senha e permissão existentes', async () => {
+  const usuario = repositorioDeUsuarios.porEmail('admin@uricer.edu.br');
+  const totalAntes = banco.prepare('SELECT COUNT(*) AS total FROM usuarios').get().total;
+  prepararAdministradorInicial();
+  assert.equal(banco.prepare('SELECT COUNT(*) AS total FROM usuarios').get().total, totalAntes);
+  const senhaHash = bcrypt.hashSync('senha-alterada', 4);
+  repositorioDeUsuarios.alterarSenha(usuario.id, senhaHash);
+  prepararAdministradorInicial();
+  assert.equal(repositorioDeUsuarios.porId(usuario.id).senha_hash, senhaHash);
+  assert.equal((await enviar('admin/login', usuario.email, { senha: 'admin' })).status, 401);
+  assert.equal((await enviar('admin/login', usuario.email, { senha: 'senha-alterada' })).status, 200);
+  repositorioDeUsuarios.definirPapel(usuario.id, 'aluno');
+  prepararAdministradorInicial();
+  assert.equal(repositorioDeUsuarios.porId(usuario.id).papel, 'aluno');
+  assert.equal((await enviar('admin/login', usuario.email, { senha: 'senha-alterada' })).status, 401);
 });

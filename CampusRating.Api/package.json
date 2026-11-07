@@ -8,6 +8,7 @@
     "start": "node src/servidor.js",
     "dev": "node --watch src/servidor.js",
     "migrar": "node src/banco/migrar.js",
+    "administrador": "node src/banco/administrador.js",
     "test": "node --test"
   },
   "engines": {

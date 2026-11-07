@@ -46,7 +46,30 @@ const apresentarUsuario = (usuario) => ({
   email: usuario.email,
   apelido: usuario.apelido,
   criadoEm: usuario.criado_em,
+  papel: usuario.papel,
 });
+
+export const prepararAdministradorInicial = () => {
+  const email = 'admin@uricer.edu.br';
+  if (repositorioDeUsuarios.porEmail(email)) return;
+  const apelido = repositorioDeUsuarios.apelidoEmUso('Administração')
+    ? gerarApelidoDisponivel(repositorioDeUsuarios.apelidoEmUso) : 'Administração';
+  repositorioDeUsuarios.criar({
+    email, senhaHash: bcrypt.hashSync('admin', 10), apelido, papel: 'administrador',
+  });
+};
+
+export const entrarAdministrador = ({ email, senha }) => {
+  const emailNormalizado = normalizarEmail(email);
+  if (!formatoDeEmail.test(emailNormalizado)) {
+    throw erroDeValidacao('email_invalido', 'Informe um e-mail válido para a administração.', 'email');
+  }
+  const usuario = repositorioDeUsuarios.porEmail(emailNormalizado);
+  if (!usuario || usuario.papel !== 'administrador' || !bcrypt.compareSync(String(senha ?? ''), usuario.senha_hash)) {
+    throw erroDeAutenticacao('credenciais_invalidas', 'E-mail ou senha incorretos para a administração.');
+  }
+  return { token: gerarToken(usuario), usuario: apresentarUsuario(usuario) };
+};
 
 export const registrar = ({ email, senha, confirmacaoSenha, apelido, aceitouRegras }) => {
   const emailNormalizado = normalizarEmail(email);

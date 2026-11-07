@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using CommunityToolkit.Maui;
 
 namespace CampusRating
 {
@@ -9,6 +10,12 @@ namespace CampusRating
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit(options =>
+                {
+#if WINDOWS
+                    options.SetShouldEnableSnackbarOnWindows(true);
+#endif
+                })
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

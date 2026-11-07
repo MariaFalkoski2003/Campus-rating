@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:PaginaDoCampus xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                     xmlns:local="clr-namespace:CampusRating"
+                     xmlns:vm="clr-namespace:CampusRating.ViewModels"
+                     xmlns:model="clr-namespace:CampusRating.Modelos"
+                     xmlns:ui="clr-namespace:CampusRating.Componentes"
+                     x:Class="CampusRating.PerfilPage" x:DataType="vm:HomeViewModel"
+                     Title="Perfil" BackgroundColor="White">
+    <ScrollView MaximumWidthRequest="720" HorizontalOptions="Fill">
+        <VerticalStackLayout Padding="24,20,24,28" Spacing="18">
+            <Label Text="Meu perfil" Style="{StaticResource TituloDaPagina}" />
+            <Border Padding="16" BackgroundColor="#F5F1FF" StrokeThickness="0" StrokeShape="RoundRectangle 14">
+                <Grid ColumnDefinitions="48,*" ColumnSpacing="14">
+                    <Image Source="campus_rating_logo.png" WidthRequest="44" HeightRequest="44" VerticalOptions="Start" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="{Binding Apelido}" FontSize="21" TextColor="#5140B5" />
+                        <Label Text="{Binding Email}" FontSize="14" LineBreakMode="WordWrap" />
+                        <Label Text="Seu e-mail fica visível somente para você." Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+            <Label Text="Dados da conta" Style="{StaticResource TituloDaSecao}" />
+            <Button Text="Editar e-mail" Style="{StaticResource BotaoSecundario}" Clicked="OnEditEmailClicked" />
+            <Button Text="Alterar senha" Style="{StaticResource BotaoSecundario}" Clicked="OnChangePasswordClicked" />
+            <BoxView Style="{StaticResource Divisor}" />
+            <Button Text="Meus relatos" Clicked="OnMyReportsClicked" />
+            <VerticalStackLayout x:Name="MyReportsPanel" IsVisible="False" Spacing="14">
+                <Label Text="Acompanhe seus relatos" Style="{StaticResource TituloDaSecao}" />
+                <Label Text="Filtre pelo andamento e abra um relato para consultar as respostas." Style="{StaticResource TextoDeApoio}" />
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RadioButtonGroup.GroupName="FiltroMeusRelatos">
+                    <RadioButton Content="Todos" Value="todos" IsChecked="True" TextColor="#242039" FontSize="13" CheckedChanged="OnReportFilterChanged" />
+                    <RadioButton Grid.Column="1" Content="Pendentes" Value="pendente" TextColor="#242039" FontSize="13" CheckedChanged="OnReportFilterChanged" />
+                    <RadioButton Grid.Row="1" Content="Em análise" Value="em_analise" TextColor="#242039" FontSize="13" CheckedChanged="OnReportFilterChanged" />
+                    <RadioButton Grid.Row="1" Grid.Column="1" Content="Resolvidos" Value="resolvido" TextColor="#242039" FontSize="13" CheckedChanged="OnReportFilterChanged" />
+                </Grid>
+                <ui:AvisoDaInterface x:Name="RelatosAviso" Titulo="Seus relatos" Mensagem="{Binding MensagemRelatos}" />
+                <Button Text="Atualizar meus relatos" Style="{StaticResource BotaoContorno}" Clicked="OnMyReportsClicked" />
+                <VerticalStackLayout Spacing="12" BindableLayout.ItemsSource="{Binding MeusRelatos}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="model:RelatoDoAluno">
+                            <VerticalStackLayout Spacing="10" Padding="0,12">
+                                <Label Text="{Binding LocalNome}" FontSize="19" />
+                                <ui:SeloDeStatus Status="{Binding Status}" />
+                                <Label Text="{Binding DataTexto}" Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                                <Label Text="{Binding Texto}" FontSize="14" MaxLines="3" LineBreakMode="TailTruncation" />
+                                <Button Text="Consultar relato e respostas" Style="{StaticResource BotaoSecundario}" Clicked="OnOpenReportClicked" />
+                                <BoxView Style="{StaticResource Divisor}" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+            <BoxView Style="{StaticResource Divisor}" />
+            <Label Text="Privacidade e acesso" Style="{StaticResource TituloDaSecao}" />
+            <Button Text="Regras da plataforma e uso dos dados" Style="{StaticResource BotaoSecundario}" Clicked="OnRulesClicked" />
+            <Button Text="Excluir conta" Style="{StaticResource BotaoPerigoso}" Clicked="OnDeleteAccountClicked" />
+            <Button Text="Sair" Style="{StaticResource BotaoSecundario}" Clicked="OnLogoutClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</local:PaginaDoCampus>

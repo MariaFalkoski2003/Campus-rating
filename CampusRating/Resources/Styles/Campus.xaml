@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:local="clr-namespace:CampusRating">
+    <Color x:Key="CampusTexto">#242039</Color>
+    <Color x:Key="CampusTextoSecundario">#625D73</Color>
+    <Color x:Key="CampusRoxo">#6251D2</Color>
+    <Color x:Key="CampusLavanda">#F5F1FF</Color>
+    <Color x:Key="CampusLinha">#E6E0EF</Color>
+
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="LineHeight" Value="1.2" />
+    </Style>
+    <Style x:Key="TituloDaPagina" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="SemanticProperties.HeadingLevel" Value="Level1" />
+    </Style>
+    <Style x:Key="TituloDaSecao" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="SemanticProperties.HeadingLevel" Value="Level2" />
+    </Style>
+    <Style x:Key="TextoDeApoio" TargetType="Label">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTextoSecundario}" />
+        <Setter Property="LineHeight" Value="1.3" />
+    </Style>
+    <Style x:Key="Divisor" TargetType="BoxView">
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Color" Value="{StaticResource CampusLinha}" />
+        <Setter Property="Margin" Value="0,8" />
+    </Style>
+    <Style x:Key="CampoDeEntrada" TargetType="Border">
+        <Setter Property="Padding" Value="12,4" />
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="Stroke" Value="#CFC4E7" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 12" />
+    </Style>
+    <Style x:Key="BotaoBase" TargetType="Button">
+        <Setter Property="local:FeedbackDeToque.Ativo" Value="True" />
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontAttributes" Value="None" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="MinimumHeightRequest" Value="48" />
+        <Setter Property="MinimumWidthRequest" Value="44" />
+        <Setter Property="CornerRadius" Value="12" />
+    </Style>
+
+    <Style x:Key="BotaoPrimario" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
+        <Setter Property="BackgroundColor" Value="#6251D2" />
+        <Setter Property="TextColor" Value="#FFFFFF" />
+        <Setter Property="BorderColor" Value="#6251D2" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#6251D2" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#6251D2" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#5543C4" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#5543C4" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#4939B1" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#4939B1" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#6251D2" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#6251D2" />
+                            <Setter Property="BorderWidth" Value="2" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E6E2EF" />
+                            <Setter Property="TextColor" Value="#6C657A" />
+                            <Setter Property="BorderColor" Value="#DDD7E8" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BotaoSecundario" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
+        <Setter Property="BackgroundColor" Value="#EEE8FC" />
+        <Setter Property="TextColor" Value="#5140B5" />
+        <Setter Property="BorderColor" Value="#EEE8FC" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#EEE8FC" />
+                            <Setter Property="TextColor" Value="#5140B5" />
+                            <Setter Property="BorderColor" Value="#EEE8FC" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E2D9F7" />
+                            <Setter Property="TextColor" Value="#4939A8" />
+                            <Setter Property="BorderColor" Value="#D6CAF3" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#D6CAF3" />
+                            <Setter Property="TextColor" Value="#3E2D98" />
+                            <Setter Property="BorderColor" Value="#C7B8EB" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#EEE8FC" />
+                            <Setter Property="TextColor" Value="#5140B5" />
+                            <Setter Property="BorderColor" Value="#EEE8FC" />
+                            <Setter Property="BorderWidth" Value="2" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E6E2EF" />
+                            <Setter Property="TextColor" Value="#6C657A" />
+                            <Setter Property="BorderColor" Value="#DDD7E8" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BotaoContorno" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
+        <Setter Property="BackgroundColor" Value="#FFFFFF" />
+        <Setter Property="TextColor" Value="#5140B5" />
+        <Setter Property="BorderColor" Value="#BAACE8" />
+        <Setter Property="BorderWidth" Value="1" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                            <Setter Property="TextColor" Value="#5140B5" />
+                            <Setter Property="BorderColor" Value="#BAACE8" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#F3EEFF" />
+                            <Setter Property="TextColor" Value="#4939A8" />
+                            <Setter Property="BorderColor" Value="#A28FDB" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E7DFF8" />
+                            <Setter Property="TextColor" Value="#3E2D98" />
+                            <Setter Property="BorderColor" Value="#8F79CE" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#FFFFFF" />
+                            <Setter Property="TextColor" Value="#5140B5" />
+                            <Setter Property="BorderColor" Value="#BAACE8" />
+                            <Setter Property="BorderWidth" Value="2" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E6E2EF" />
+                            <Setter Property="TextColor" Value="#6C657A" />
+                            <Setter Property="BorderColor" Value="#DDD7E8" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style x:Key="BotaoPerigoso" TargetType="Button" BasedOn="{StaticResource BotaoBase}">
+        <Setter Property="BackgroundColor" Value="#A1283B" />
+        <Setter Property="TextColor" Value="#FFFFFF" />
+        <Setter Property="BorderColor" Value="#A1283B" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="VisualStateManager.VisualStateGroups">
+            <VisualStateGroupList>
+                <VisualStateGroup x:Name="CommonStates">
+                    <VisualState x:Name="Normal">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#A1283B" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#A1283B" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="PointerOver">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#902033" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#902033" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Pressed">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#791B2B" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#791B2B" />
+                            <Setter Property="BorderWidth" Value="0" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Focused">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#A1283B" />
+                            <Setter Property="TextColor" Value="#FFFFFF" />
+                            <Setter Property="BorderColor" Value="#A1283B" />
+                            <Setter Property="BorderWidth" Value="2" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                    <VisualState x:Name="Disabled">
+                        <VisualState.Setters>
+                            <Setter Property="BackgroundColor" Value="#E6E2EF" />
+                            <Setter Property="TextColor" Value="#6C657A" />
+                            <Setter Property="BorderColor" Value="#DDD7E8" />
+                            <Setter Property="BorderWidth" Value="1" />
+                            <Setter Property="Opacity" Value="1" />
+                        </VisualState.Setters>
+                    </VisualState>
+                </VisualStateGroup>
+            </VisualStateGroupList>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Button" BasedOn="{StaticResource BotaoPrimario}" />
+    <Style x:Key="FiltroDoCampus" TargetType="Button" BasedOn="{StaticResource BotaoContorno}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="14,8" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="CornerRadius" Value="22" />
+    </Style>
+    <Style x:Key="FiltroSelecionado" TargetType="Button" BasedOn="{StaticResource BotaoPrimario}">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="14,8" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="CornerRadius" Value="22" />
+    </Style>
+    <Style TargetType="Entry">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="PlaceholderColor" Value="#7B738A" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+    </Style>
+    <Style TargetType="Editor">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="PlaceholderColor" Value="#7B738A" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+    </Style>
+    <Style TargetType="Picker">
+        <Setter Property="FontFamily" Value="OpenSansRegular" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextColor" Value="{StaticResource CampusTexto}" />
+        <Setter Property="TitleColor" Value="{StaticResource CampusTextoSecundario}" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="MinimumHeightRequest" Value="44" />
+    </Style>
+    <Style TargetType="NavigationPage">
+        <Setter Property="BarBackgroundColor" Value="{StaticResource CampusLavanda}" />
+        <Setter Property="BarTextColor" Value="{StaticResource CampusTexto}" />
+    </Style>
+    <Style TargetType="Page" ApplyToDerivedTypes="True">
+        <Setter Property="BackgroundColor" Value="White" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+</ResourceDictionary>

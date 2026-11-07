@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CampusRating.ViewModels"
+             xmlns:model="clr-namespace:CampusRating.Modelos"
+             xmlns:ui="clr-namespace:CampusRating.Componentes"
+             x:Class="CampusRating.AdministracaoPage" x:DataType="vm:AdministracaoViewModel"
+             Title="Administração" BackgroundColor="White">
+    <Grid RowDefinitions="Auto,Auto,*" Padding="24,20,24,0" RowSpacing="16" MaximumWidthRequest="720" HorizontalOptions="Fill">
+        <VerticalStackLayout Spacing="14">
+            <Label Text="Painel de relatos" Style="{StaticResource TituloDaPagina}" />
+            <Label Text="Acompanhe e responda aos alunos." Style="{StaticResource TextoDeApoio}" />
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Andamento" FontSize="12" TextColor="#5140B5" />
+                <Grid x:Name="FiltrosDeAndamento" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                      ColumnSpacing="8" RowSpacing="8" IsEnabled="{Binding PodeInteragir}">
+                    <Button Text="Todos" CommandParameter="0" Style="{StaticResource FiltroSelecionado}"
+                            SemanticProperties.Description="Todos, filtro selecionado" Clicked="OnFilterClicked" />
+                    <Button Grid.Column="1" Text="Pendentes" CommandParameter="1"
+                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+                    <Button Grid.Row="1" Text="Em análise" CommandParameter="2"
+                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+                    <Button Grid.Row="1" Grid.Column="1" Text="Resolvidos" CommandParameter="3"
+                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+                </Grid>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Row="1" Spacing="8">
+            <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" Color="#6251D2" />
+            <Label x:Name="ResumoLabel" Text="{Binding Mensagem}" Style="{StaticResource TextoDeApoio}" />
+            <ui:AvisoDaInterface x:Name="ErroAviso" Tom="Erro" Titulo="Não foi possível carregar os relatos" />
+        </VerticalStackLayout>
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Relatos}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:RelatoAdministrativo">
+                    <VerticalStackLayout Spacing="10" Padding="0,12,0,16">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Label Text="{Binding LocalNome}" FontSize="19" VerticalOptions="Center" />
+                            <ui:SeloDeStatus Grid.Column="1" Status="{Binding Status}" VerticalOptions="Center" />
+                        </Grid>
+                        <Label Text="{Binding Texto}" FontSize="14" MaxLines="3" LineBreakMode="TailTruncation" />
+                        <Label Text="{Binding Apelido}" Style="{StaticResource TextoDeApoio}" />
+                        <Label Text="{Binding DataTexto}" Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                        <Button Text="Abrir relato" Style="{StaticResource BotaoSecundario}" CommandParameter="{Binding Id}" Clicked="OnOpenReportClicked" />
+                        <BoxView Style="{StaticResource Divisor}" Margin="0,8,0,0" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Footer><BoxView HeightRequest="16" Color="Transparent" /></CollectionView.Footer>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -1,8 +1,8 @@
 import { banco } from './conexao.js';
 
 const inserir = banco.prepare(
-  `INSERT INTO usuarios (email, senha_hash, apelido, regras_aceitas_em, versao_regras)
-   VALUES (@email, @senhaHash, @apelido, @regrasAceitasEm, @versaoRegras)`
+  `INSERT INTO usuarios (email, senha_hash, apelido, regras_aceitas_em, versao_regras, papel)
+   VALUES (@email, @senhaHash, @apelido, @regrasAceitasEm, @versaoRegras, @papel)`
 );
 
 const buscarPorEmail = banco.prepare('SELECT * FROM usuarios WHERE email = ?');
@@ -10,8 +10,8 @@ const buscarPorId = banco.prepare('SELECT * FROM usuarios WHERE id = ?');
 const contarPorApelido = banco.prepare('SELECT COUNT(*) AS total FROM usuarios WHERE apelido = ?');
 
 export const repositorioDeUsuarios = {
-  criar({ email, senhaHash, apelido, regrasAceitasEm = null, versaoRegras = null }) {
-    const resultado = inserir.run({ email, senhaHash, apelido, regrasAceitasEm, versaoRegras });
+  criar({ email, senhaHash, apelido, regrasAceitasEm = null, versaoRegras = null, papel = 'aluno' }) {
+    const resultado = inserir.run({ email, senhaHash, apelido, regrasAceitasEm, versaoRegras, papel });
     return buscarPorId.get(resultado.lastInsertRowid);
   },
 
@@ -25,6 +25,12 @@ export const repositorioDeUsuarios = {
 
   apelidoEmUso(apelido) {
     return contarPorApelido.get(apelido).total > 0;
+  },
+
+  definirPapel(id, papel) {
+    banco.prepare(`UPDATE usuarios SET papel = ?, versao_token = versao_token + 1
+      WHERE id = ? AND papel <> ?`).run(papel, id, papel);
+    return buscarPorId.get(id);
   },
 
   alterarEmail(id, email) {

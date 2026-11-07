@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { entrar, perfilDoUsuario, registrar, alterarEmail, alterarSenha, excluirConta } from '../servicos/autenticacao.js';
+import { entrar, entrarAdministrador, perfilDoUsuario, registrar, alterarEmail, alterarSenha, excluirConta } from '../servicos/autenticacao.js';
 import { exigirAutenticacao } from '../middlewares/exigirAutenticacao.js';
 
 export const rotasDeAutenticacao = Router();
@@ -27,6 +27,11 @@ rotasDeAutenticacao.post('/login', (requisicao, resposta, proximo) => {
   } catch (erro) {
     proximo(erro);
   }
+});
+
+rotasDeAutenticacao.post('/admin/login', (requisicao, resposta, proximo) => {
+  try { resposta.json(entrarAdministrador(requisicao.body ?? {})); }
+  catch (erro) { proximo(erro); }
 });
 
 rotasDeAutenticacao.get('/eu', exigirAutenticacao, (requisicao, resposta, proximo) => {

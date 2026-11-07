@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:CampusRating.ViewModels"
+             xmlns:model="clr-namespace:CampusRating.Modelos"
+             xmlns:ui="clr-namespace:CampusRating.Componentes"
+             x:Class="CampusRating.DetalhesRelatoAdministrativoPage" x:DataType="vm:DetalhesRelatoAdministrativoViewModel"
+             Title="Gerenciar relato" BackgroundColor="White">
+    <Grid RowDefinitions="*,Auto" MaximumWidthRequest="720" HorizontalOptions="Fill">
+        <ScrollView>
+            <VerticalStackLayout Padding="24,20,24,16" Spacing="12">
+                <Label Text="{Binding Relato.LocalNome}" Style="{StaticResource TituloDaPagina}" />
+                <ActivityIndicator IsRunning="{Binding Ocupado}" IsVisible="{Binding Ocupado}" Color="#6251D2" />
+                <ui:AvisoDaInterface x:Name="AvisoResultado" Mensagem="{Binding Mensagem}" />
+                <VerticalStackLayout IsVisible="{Binding TemRelato}" Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="{Binding Relato.Apelido}" Style="{StaticResource TextoDeApoio}" />
+                            <Label Text="{Binding Relato.DataTexto}" Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                        </VerticalStackLayout>
+                        <ui:SeloDeStatus Grid.Column="1" Status="{Binding Relato.Status}" VerticalOptions="Center" />
+                    </Grid>
+                    <Label Text="{Binding Relato.Texto}" FontSize="15" LineHeight="1.35" />
+                    <BoxView Style="{StaticResource Divisor}" Margin="0" />
+                    <Label Text="Respostas" Style="{StaticResource TituloDaSecao}" />
+                    <Label Text="Este relato ainda não recebeu uma resposta." IsVisible="{Binding SemRespostas}" Style="{StaticResource TextoDeApoio}" />
+                    <VerticalStackLayout Spacing="14" BindableLayout.ItemsSource="{Binding Respostas}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="model:RespostaAdministrativa">
+                                <VerticalStackLayout Spacing="6">
+                                    <Label Text="Administração" FontSize="14" TextColor="#5140B5" />
+                                    <Label Text="{Binding DataTexto}" Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                                    <Label Text="{Binding Texto}" FontSize="14" LineHeight="1.3" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <BoxView Style="{StaticResource Divisor}" Margin="0" />
+                    <Label Text="Atualizar relato" Style="{StaticResource TituloDaSecao}" />
+                    <Label Text="Escolha o andamento e, se desejar, escreva um comentário." Style="{StaticResource TextoDeApoio}" />
+                    <Label Text="Andamento" FontSize="14" />
+                    <Border Style="{StaticResource CampoDeEntrada}">
+                        <Picker SelectedIndex="{Binding StatusSelecionado, Mode=TwoWay}"
+                                IsEnabled="{Binding PodeInteragir}" SemanticProperties.Description="Novo andamento do relato">
+                            <Picker.Items>
+                                <x:String>Pendente</x:String>
+                                <x:String>Em análise</x:String>
+                                <x:String>Resolvido</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Border>
+                    <Label Text="Comentário ao aluno (opcional)" FontSize="14" />
+                    <Border Style="{StaticResource CampoDeEntrada}" Padding="12">
+                        <Editor x:Name="ResponseEditor" Text="{Binding TextoResposta, Mode=TwoWay}" MaxLength="2000"
+                                Placeholder="Escreva uma resposta" MinimumHeightRequest="110" AutoSize="TextChanges"
+                                IsEnabled="{Binding PodeInteragir}" SemanticProperties.Description="Texto da resposta ao aluno" />
+                    </Border>
+                    <Label Text="Até 2.000 caracteres. Ao enviar um comentário, o aluno receberá um aviso." Style="{StaticResource TextoDeApoio}" FontSize="12" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <VerticalStackLayout Grid.Row="1" Padding="24,12,24,18" IsVisible="{Binding TemRelato}" BackgroundColor="White">
+            <Button Text="Salvar alterações" IsEnabled="{Binding PodeSalvar}" Clicked="OnSaveClicked" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

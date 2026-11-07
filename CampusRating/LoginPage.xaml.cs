@@ -1,15 +1,18 @@
 using CampusRating.Servicos;
+using CampusRating.ViewModels;
 
 namespace CampusRating;
 
 public partial class LoginPage : ContentPage
 {
-    private readonly ApiCampusRating _api = ApiCampusRating.Instancia;
-    private bool _enviando;
+    private readonly LoginViewModel _viewModel;
+    private bool _animandoEntrada;
 
-    public LoginPage()
+    public LoginPage(bool administrador = false)
     {
+        _viewModel = new(administrador);
         InitializeComponent();
+        BindingContext = _viewModel;
     }
 
     protected override async void OnAppearing()
@@ -20,11 +23,11 @@ public partial class LoginPage : ContentPage
         {
             await SessaoDoUsuario.RestaurarAsync();
             if (SessaoDoUsuario.EstaAutenticado)
-                await Shell.Current.GoToAsync($"//{nameof(HomePage)}");
+                await NavegacaoDoAplicativo.MostrarInicioAsync(this);
             else if (SessaoDoUsuario.Token is not null)
                 await SessaoDoUsuario.EncerrarAsync();
         }
-        catch (ExcecaoDaApi erro) { await DisplayAlertAsync("Armazenamento local", erro.Message, "Entendi"); }
+        catch (ExcecaoDaApi erro) { ErroAviso.Mensagem = erro.Message; }
         finally { DefinirEstadoDeEnvio(false); }
     }
 
@@ -53,46 +56,26 @@ public partial class LoginPage : ContentPage
 
     private async Task EntrarAsync()
     {
-        if (_enviando)
+        if (_viewModel.Enviando || _animandoEntrada)
         {
             return;
         }
 
-        _enviando = true;
+        _animandoEntrada = true;
+        ErroAviso.Mensagem = "";
         try
         {
             // Aguarda o efeito na borda com degradê antes de desabilitar o botão.
-            await FeedbackDeToque.AnimarToqueAsync(LoginButton.Parent);
-
-            var email = EmailEntry.Text?.Trim() ?? string.Empty;
-            var senha = PasswordEntry.Text ?? string.Empty;
-
-            if (!EmailInstitucional.EhValido(email))
-            {
-                await DisplayAlertAsync("E-mail inválido", EmailInstitucional.MensagemDeErro, "Entendi");
-                EmailEntry.Focus();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(senha))
-            {
-                await DisplayAlertAsync("Senha necessária", "Digite sua senha para continuar.", "Entendi");
-                PasswordEntry.Focus();
-                return;
-            }
+            await FeedbackDeToque.AnimarToqueAsync(LoginButton);
 
             DefinirEstadoDeEnvio(true);
+            await _viewModel.EntrarAsync();
 
-            var resposta = await _api.EntrarAsync(email, senha);
-            await SessaoDoUsuario.IniciarAsync(resposta);
-            PasswordEntry.Text = string.Empty;
-
-            await Shell.Current.GoToAsync(
-                $"//{nameof(HomePage)}?nickname={Uri.EscapeDataString(resposta.Usuario.Apelido)}");
+            await NavegacaoDoAplicativo.MostrarInicioAsync(this);
         }
         catch (ExcecaoDaApi erro)
         {
-            await DisplayAlertAsync("Não foi possível entrar", erro.Message, "Entendi");
+            ErroAviso.Mensagem = erro.Message;
             if (erro.Campo == "email")
             {
                 EmailEntry.Focus();
@@ -104,22 +87,24 @@ public partial class LoginPage : ContentPage
         }
         finally
         {
+            _animandoEntrada = false;
             DefinirEstadoDeEnvio(false);
         }
     }
 
     private async void OnCreateAccountClicked(object? sender, EventArgs e)
     {
-        if (!_enviando)
+        if (_viewModel.MostrarCadastro && !_viewModel.Enviando && !_animandoEntrada)
         {
-            await Shell.Current.GoToAsync(nameof(SignPage));
+            await Navigation.PushAsync(new SignPage());
         }
     }
 
-    private void DefinirEstadoDeEnvio(bool enviando)
+    private void OnSwitchAccessClicked(object? sender, EventArgs e)
     {
-        _enviando = enviando;
-        LoginButton.IsEnabled = !enviando;
-        LoginButton.Text = enviando ? "Entrando..." : "Entrar";
+        if (_viewModel.Enviando || _animandoEntrada || Window is not { } janela) return;
+        janela.Page = NavegacaoDoAplicativo.CriarLogin(!_viewModel.EhLoginAdministrativo);
     }
+
+    private void DefinirEstadoDeEnvio(bool enviando) => _viewModel.Enviando = enviando;
 }

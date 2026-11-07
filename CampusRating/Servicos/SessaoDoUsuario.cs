@@ -12,6 +12,7 @@ public static class SessaoDoUsuario
     public static UsuarioDaApi? Usuario { get; private set; }
 
     public static bool EstaAutenticado => !string.IsNullOrEmpty(Token) && TokenNoPrazo(Token);
+    public static bool EhAdministrador => EstaAutenticado && Usuario?.Papel == "administrador";
 
     public static async Task IniciarAsync(RespostaDeAutenticacao resposta)
     {

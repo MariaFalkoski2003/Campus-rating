@@ -21,9 +21,15 @@ export const aplicarEsquema = () => {
     for (const [nome, tipo] of [
       ['regras_aceitas_em', 'TEXT'], ['versao_regras', 'TEXT'],
       ['versao_token', 'INTEGER NOT NULL DEFAULT 0'],
+      ['papel', "TEXT NOT NULL DEFAULT 'aluno' CHECK (papel IN ('aluno', 'administrador'))"],
     ]) {
       if (!colunas.includes(nome)) banco.exec(`ALTER TABLE usuarios ADD COLUMN ${nome} ${tipo}`);
     }
+    const colunasDasRespostas = banco.pragma('table_info(respostas)').map(coluna => coluna.name);
+    if (!colunasDasRespostas.includes('chave_envio')) {
+      banco.exec('ALTER TABLE respostas ADD COLUMN chave_envio TEXT');
+    }
+    banco.exec('CREATE UNIQUE INDEX IF NOT EXISTS indice_respostas_envio ON respostas (chave_envio)');
   })();
 };
 

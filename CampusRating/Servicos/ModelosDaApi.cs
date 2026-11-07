@@ -6,7 +6,8 @@ public sealed record UsuarioDaApi(
     [property: JsonPropertyName("id")] int Id,
     [property: JsonPropertyName("email")] string Email,
     [property: JsonPropertyName("apelido")] string Apelido,
-    [property: JsonPropertyName("criadoEm")] string CriadoEm);
+    [property: JsonPropertyName("criadoEm")] string CriadoEm,
+    [property: JsonPropertyName("papel")] string Papel = "aluno");
 
 public sealed record RespostaDeAutenticacao(
     [property: JsonPropertyName("token")] string Token,

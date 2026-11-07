@@ -1,4 +1,6 @@
 using CampusRating.Servicos;
+using CampusRating.Componentes;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace CampusRating;
 
@@ -33,18 +35,23 @@ public static class ModaisDaPlataforma
     public static async Task MostrarRegrasAsync(Page origem)
     {
         if (origem.Navigation.ModalStack.Count > 0) return;
-        var fechar = new Button { Text = "Fechar", BackgroundColor = Color.FromArgb("#8065F1") };
+        var fechar = new Button { Text = "Fechar", Style = (Style)Application.Current!.Resources["BotaoSecundario"] };
+        var conteudo = new VerticalStackLayout
+        {
+            Padding = 24, Spacing = 20, MaximumWidthRequest = 640, HorizontalOptions = LayoutOptions.Fill
+        };
+        foreach (var trecho in Regras.Replace("\r", "").Split("\n\n", StringSplitOptions.RemoveEmptyEntries))
+        {
+            var linhas = trecho.Split('\n', 2);
+            conteudo.Add(new Label { Text = linhas[0], FontSize = linhas.Length == 1 ? 25 : 18, FontFamily = "OpenSansRegular" });
+            if (linhas.Length > 1)
+                conteudo.Add(new Label { Text = linhas[1], FontSize = 14, LineHeight = 1.35, TextColor = Color.FromArgb("#625D73") });
+        }
+        conteudo.Add(fechar);
         var pagina = new ContentPage
         {
-            Title = "Regras da plataforma", BackgroundColor = Color.FromArgb("#FDFCFF"),
-            Content = new ScrollView
-            {
-                Content = new VerticalStackLayout
-                {
-                    Padding = 24, Spacing = 20, MaximumWidthRequest = 640, HorizontalOptions = LayoutOptions.Fill,
-                    Children = { new Label { Text = Regras, TextColor = Color.FromArgb("#25242C"), FontSize = 16 }, fechar }
-                }
-            }
+            Title = "Regras da plataforma", BackgroundColor = Colors.White,
+            Content = new ScrollView { Content = conteudo }
         };
         fechar.Clicked += async (_, _) => await pagina.Navigation.PopModalAsync();
         await origem.Navigation.PushModalAsync(pagina);
@@ -55,7 +62,7 @@ public static class ModaisDaPlataforma
         string textoBotao = "Salvar alterações", bool perigoso = false)
     {
         if (origem.Navigation.ModalStack.Count > 0) return false;
-        var pagina = new FormularioModal(titulo, descricao, campos, salvar, textoBotao, perigoso);
+        var pagina = new FormularioModal(origem, titulo, descricao, campos, salvar, textoBotao, perigoso);
         await origem.Navigation.PushModalAsync(pagina);
         return await pagina.Resultado;
     }
@@ -63,24 +70,32 @@ public static class ModaisDaPlataforma
     public static async Task MostrarRelatoAsync(Page origem, RelatoDaApi relato, string mensagem = "")
     {
         if (origem.Navigation.ModalStack.Count > 0) return;
-        var conteudo = new VerticalStackLayout { Padding = 24, Spacing = 16, MaximumWidthRequest = 640 };
+        var conteudo = new VerticalStackLayout { Padding = 24, Spacing = 14, MaximumWidthRequest = 640, HorizontalOptions = LayoutOptions.Fill };
         if (!string.IsNullOrWhiteSpace(mensagem))
-            conteudo.Add(new Label { Text = mensagem.Trim(), FontSize = 14, TextColor = Color.FromArgb("#6251D2") });
-        conteudo.Add(new Label { Text = relato.LocalNome, FontSize = 26, TextColor = Color.FromArgb("#25242C") });
-        conteudo.Add(new Label { Text = $"{relato.Apelido} · {FormatacaoDoRelato.Data(relato.CriadoEm)}", TextColor = Color.FromArgb("#625F6D") });
-        conteudo.Add(new Label { Text = FormatacaoDoRelato.Status(relato.Status), TextColor = Color.FromArgb("#6251D2") });
-        conteudo.Add(new Label { Text = relato.Texto, FontSize = 16, TextColor = Color.FromArgb("#25242C") });
-        conteudo.Add(new Label { Text = "Respostas da administração", FontSize = 20, TextColor = Color.FromArgb("#25242C") });
+            conteudo.Add(new AvisoDaInterface { Titulo = "Consulta no dispositivo", Mensagem = mensagem.Trim() });
+        conteudo.Add(new Label { Text = relato.LocalNome, FontSize = 26, FontFamily = "OpenSansRegular" });
+        conteudo.Add(new Label { Text = $"{relato.Apelido} · {FormatacaoDoRelato.Data(relato.CriadoEm)}", FontSize = 13, TextColor = Color.FromArgb("#625D73") });
+        conteudo.Add(new SeloDeStatus { Status = relato.Status });
+        conteudo.Add(new Label { Text = relato.Texto, FontSize = 15, LineHeight = 1.35 });
+        conteudo.Add(new BoxView { Style = (Style)Application.Current!.Resources["Divisor"] });
+        conteudo.Add(new Label { Text = "Respostas da administração", FontSize = 18, FontFamily = "OpenSansRegular" });
         if (relato.Respostas is not { Count: > 0 })
-            conteudo.Add(new Label { Text = "Este relato ainda não recebeu uma resposta.", TextColor = Color.FromArgb("#625F6D") });
+            conteudo.Add(new AvisoDaInterface { Titulo = "Aguardando resposta", Mensagem = "A administração ainda não respondeu a este relato." });
         foreach (var resposta in relato.Respostas ?? [])
         {
-            conteudo.Add(new Label { Text = FormatacaoDoRelato.Data(resposta.CriadoEm), FontSize = 13, TextColor = Color.FromArgb("#625F6D") });
-            conteudo.Add(new Label { Text = resposta.Texto, FontSize = 16, TextColor = Color.FromArgb("#25242C") });
+            var historico = new VerticalStackLayout { Spacing = 8 };
+            historico.Add(new Label { Text = "Administração", FontSize = 14, TextColor = Color.FromArgb("#5140B5") });
+            historico.Add(new Label { Text = FormatacaoDoRelato.Data(resposta.CriadoEm), FontSize = 12, TextColor = Color.FromArgb("#625D73") });
+            historico.Add(new Label { Text = resposta.Texto, FontSize = 15, LineHeight = 1.3 });
+            conteudo.Add(new Border
+            {
+                Padding = 14, StrokeThickness = 0, BackgroundColor = Color.FromArgb("#F5F1FF"),
+                StrokeShape = new RoundRectangle { CornerRadius = 12 }, Content = historico
+            });
         }
-        var fechar = new Button { Text = "Fechar", BackgroundColor = Color.FromArgb("#8065F1") };
+        var fechar = new Button { Text = "Fechar" };
         conteudo.Add(fechar);
-        var pagina = new ContentPage { BackgroundColor = Color.FromArgb("#FDFCFF"), Content = new ScrollView { Content = conteudo } };
+        var pagina = new ContentPage { BackgroundColor = Colors.White, Content = new ScrollView { Content = conteudo } };
         fechar.Clicked += async (_, _) => await pagina.Navigation.PopModalAsync();
         await origem.Navigation.PushModalAsync(pagina);
     }
@@ -88,32 +103,39 @@ public static class ModaisDaPlataforma
     private sealed class FormularioModal : ContentPage
     {
         private readonly TaskCompletionSource<bool> _resultado = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly Page _origem;
         private bool _enviando;
         private bool _salvou;
         private bool _fechando;
         public Task<bool> Resultado => _resultado.Task;
 
-        public FormularioModal(string titulo, string descricao, CampoDoFormulario[] campos,
+        public FormularioModal(Page origem, string titulo, string descricao, CampoDoFormulario[] campos,
             Func<IReadOnlyDictionary<string, string>, Task> salvar, string textoBotao, bool perigoso)
         {
-            BackgroundColor = Color.FromArgb("#FDFCFF");
-            var layout = new VerticalStackLayout { Padding = 24, Spacing = 16, MaximumWidthRequest = 640 };
-            layout.Add(new Label { Text = titulo, FontSize = 28, TextColor = Color.FromArgb("#25242C") });
-            layout.Add(new Label { Text = descricao, FontSize = 15, TextColor = Color.FromArgb("#625F6D") });
+            _origem = origem;
+            BackgroundColor = Colors.White;
+            var layout = new VerticalStackLayout { Padding = 24, Spacing = 16, MaximumWidthRequest = 640, HorizontalOptions = LayoutOptions.Fill };
+            layout.Add(new Label { Text = titulo, FontSize = 27, FontFamily = "OpenSansRegular" });
+            layout.Add(new AvisoDaInterface
+            {
+                Titulo = perigoso ? "Exclusão definitiva" : "Antes de continuar", Mensagem = descricao,
+                Tom = perigoso ? TomDoAviso.Erro : TomDoAviso.Informacao
+            });
             var entradas = new Dictionary<string, InputView>();
+            var bordas = new Dictionary<string, Border>();
             foreach (var campo in campos)
             {
-                layout.Add(new Label { Text = campo.Rotulo, FontSize = 15, TextColor = Color.FromArgb("#25242C") });
+                layout.Add(new Label { Text = campo.Rotulo, FontSize = 14 });
                 InputView entrada = campo.Multilinha
-                    ? new Editor { HeightRequest = 180, MaxLength = 2000, AutoSize = EditorAutoSizeOption.TextChanges }
+                    ? new Editor { MinimumHeightRequest = 160, MaxLength = 2000, AutoSize = EditorAutoSizeOption.TextChanges }
                     : new Entry { IsPassword = campo.Senha, MaxLength = campo.Senha ? 64 : 254 };
                 entrada.Text = campo.Valor;
                 entrada.Keyboard = campo.Teclado ?? Keyboard.Default;
-                entrada.TextColor = Color.FromArgb("#25242C");
-                entrada.BackgroundColor = Colors.White;
                 SemanticProperties.SetDescription(entrada, campo.Rotulo);
                 entradas[campo.Nome] = entrada;
-                layout.Add(entrada);
+                var borda = new Border { Style = (Style)Application.Current!.Resources["CampoDeEntrada"], Content = entrada };
+                bordas[campo.Nome] = borda;
+                layout.Add(borda);
                 if (entrada is Editor editor)
                 {
                     var contador = new Label
@@ -126,11 +148,11 @@ public static class ModaisDaPlataforma
                     layout.Add(contador);
                 }
             }
-            var erroLabel = new Label { IsVisible = false, TextColor = Color.FromArgb("#A1283B"), FontSize = 14 };
-            var progresso = new ActivityIndicator { IsVisible = false, Color = Color.FromArgb("#8065F1") };
-            var botao = new Button { Text = textoBotao, BackgroundColor = Color.FromArgb(perigoso ? "#A1283B" : "#8065F1") };
-            var cancelar = new Button { Text = "Cancelar", BackgroundColor = Colors.Transparent, TextColor = Color.FromArgb("#6251D2") };
-            layout.Add(erroLabel);
+            var erroAviso = new AvisoDaInterface { Tom = TomDoAviso.Erro, Titulo = titulo == "Enviar relato" ? "Revise o relato" : "Revise os dados" };
+            var progresso = new ActivityIndicator { IsVisible = false, Color = Color.FromArgb("#6251D2") };
+            var botao = new Button { Text = textoBotao, Style = (Style)Application.Current!.Resources[perigoso ? "BotaoPerigoso" : "BotaoPrimario"] };
+            var cancelar = new Button { Text = "Cancelar", Style = (Style)Application.Current!.Resources["BotaoSecundario"] };
+            layout.Add(erroAviso);
             layout.Add(progresso);
             layout.Add(botao);
             layout.Add(cancelar);
@@ -140,7 +162,8 @@ public static class ModaisDaPlataforma
             {
                 if (_enviando) return;
                 _enviando = true;
-                erroLabel.IsVisible = false;
+                erroAviso.Mensagem = "";
+                foreach (var borda in bordas.Values) borda.Stroke = Color.FromArgb("#CFC4E7");
                 try
                 {
                     await FeedbackDeToque.AnimarToqueAsync(botao);
@@ -156,16 +179,18 @@ public static class ModaisDaPlataforma
                 }
                 catch (ExcecaoDaApi erro)
                 {
-                    erroLabel.Text = erro.Message;
-                    erroLabel.IsVisible = true;
+                    erroAviso.Mensagem = erro.Message;
                     foreach (var entrada in entradas.Values) entrada.IsEnabled = true;
-                    if (erro.Campo is not null && entradas.TryGetValue(erro.Campo, out var campo)) campo.Focus();
+                    if (erro.Campo is not null && entradas.TryGetValue(erro.Campo, out var campo))
+                    {
+                        bordas[erro.Campo].Stroke = Color.FromArgb("#B13246");
+                        campo.Focus();
+                    }
                     if (erro.Codigo is "token_ausente" or "token_invalido" or "usuario_nao_encontrado")
                     {
-                        await SessaoDoUsuario.EncerrarAsync();
                         await DisplayAlertAsync("Sessão expirada", "Entre novamente para continuar.", "Entendi");
                         await FecharAsync();
-                        await Shell.Current.GoToAsync("//LoginPage");
+                        await NavegacaoDoAplicativo.MostrarLoginAsync(_origem);
                     }
                 }
                 finally

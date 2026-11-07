@@ -8,6 +8,27 @@ const respostas = banco.prepare(`SELECT id, texto, criado_em AS criadoEm FROM re
   WHERE relato_id = ? ORDER BY criado_em, id`);
 
 export const repositorioDeRelatos = {
+  todos() {
+    return banco.prepare(`${selecionar} ORDER BY relatos.id DESC`).all();
+  },
+  porId(id) {
+    const relato = banco.prepare(`${selecionar} WHERE relatos.id = ?`).get(id);
+    return relato ? { ...relato, respostas: respostas.all(id) } : undefined;
+  },
+  alterarStatus(id, status, statusAnterior) {
+    return banco.prepare('UPDATE relatos SET status = ? WHERE id = ? AND status = ?')
+      .run(status, id, statusAnterior).changes > 0;
+  },
+  respostaPorEnvio(chaveEnvio) {
+    return banco.prepare('SELECT relato_id AS relatoId, texto FROM respostas WHERE chave_envio = ?').get(chaveEnvio);
+  },
+  responder(id, texto, chaveEnvio, status, statusAnterior) {
+    return banco.transaction(() => {
+      if (status !== undefined && !this.alterarStatus(id, status, statusAnterior)) return undefined;
+      banco.prepare('INSERT INTO respostas (relato_id, texto, chave_envio) VALUES (?, ?, ?)').run(id, texto, chaveEnvio);
+      return this.porId(id);
+    })();
+  },
   criar(localId, usuarioId, texto) {
     const { lastInsertRowid } = banco.prepare(
       'INSERT INTO relatos (local_id, usuario_id, texto) VALUES (?, ?, ?)'

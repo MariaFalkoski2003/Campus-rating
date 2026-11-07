@@ -1,5 +1,5 @@
 import { lerToken } from '../servicos/token.js';
-import { erroDeAutenticacao } from '../erros.js';
+import { ErroDaApi, erroDeAutenticacao } from '../erros.js';
 import { repositorioDeUsuarios } from '../banco/repositorioDeUsuarios.js';
 
 export const exigirAutenticacao = (requisicao, resposta, proximo) => {
@@ -18,8 +18,16 @@ export const exigirAutenticacao = (requisicao, resposta, proximo) => {
     if ((conteudo.versao ?? 0) !== usuario.versao_token) {
       throw erroDeAutenticacao('token_invalido', 'Sua sessão expirou. Entre novamente.');
     }
+    requisicao.usuarioPapel = usuario.papel;
     return proximo();
   } catch (erro) {
     return proximo(erro);
   }
+};
+
+export const exigirAdministrador = (requisicao, resposta, proximo) => {
+  if (requisicao.usuarioPapel !== 'administrador') {
+    return proximo(new ErroDaApi(403, 'acesso_negado', 'Esta área é exclusiva da administração.'));
+  }
+  return proximo();
 };

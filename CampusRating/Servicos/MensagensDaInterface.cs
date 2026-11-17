@@ -14,11 +14,16 @@ public static class MensagensDaInterface
         {
             try
             {
+#if WINDOWS
+                if (Application.Current?.Windows.FirstOrDefault()?.Page is { } pagina)
+                    await pagina.DisplayAlertAsync("Campus Rating", mensagem, "Entendi");
+#else
                 if (snackbar)
                     await Snackbar.Make(mensagem, action: () => { }, actionButtonText: "Entendi",
                         duration: TimeSpan.FromSeconds(8)).Show();
                 else
                     await Toast.Make(mensagem, ToastDuration.Long).Show();
+#endif
             }
             catch (OperationCanceledException) { /* Um aviso mais recente pode substituir este. */ }
             catch (Exception erro)

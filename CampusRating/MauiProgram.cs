@@ -10,12 +10,7 @@ namespace CampusRating
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseMauiCommunityToolkit(options =>
-                {
-#if WINDOWS
-                    options.SetShouldEnableSnackbarOnWindows(true);
-#endif
-                })
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

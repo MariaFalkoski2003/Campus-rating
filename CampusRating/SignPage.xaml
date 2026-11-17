@@ -43,24 +43,27 @@
                     </Grid>
                 </Border>
             </VerticalStackLayout>
-            <Border Padding="16" BackgroundColor="#F5F1FF" StrokeThickness="0" StrokeShape="RoundRectangle 14">
-                <VerticalStackLayout Spacing="10">
+            <Border Padding="16" BackgroundColor="White" Stroke="#D6CAF3" StrokeThickness="1" StrokeShape="RoundRectangle 14">
+                <VerticalStackLayout Spacing="12">
                     <Label Text="Seu apelido na plataforma" Style="{StaticResource TextoDeApoio}" />
                     <Label Text="{Binding Apelido}" FontSize="21" TextColor="#5140B5" />
-                    <Button Text="Sortear novamente" Style="{StaticResource BotaoContorno}"
+                    <Button Text="Sortear novamente" Style="{StaticResource BotaoSecundario}"
+                            FontSize="13" Padding="14,8" MinimumHeightRequest="44" HorizontalOptions="Start"
                             IsEnabled="{Binding PodeEnviar}" Clicked="OnGenerateNickname" />
                 </VerticalStackLayout>
             </Border>
+            <VerticalStackLayout Spacing="10">
+                <BoxView Style="{StaticResource Divisor}" Margin="0,2,0,4" />
+                <Grid ColumnDefinitions="32,*" ColumnSpacing="8">
+                    <CheckBox x:Name="RulesCheckBox" IsChecked="{Binding AceitouRegras, Mode=TwoWay}" IsEnabled="{Binding PodeEnviar}"
+                              Color="#6251D2" WidthRequest="32" HeightRequest="32" MinimumWidthRequest="32" MinimumHeightRequest="32"
+                              VerticalOptions="Center" SemanticProperties.Description="Aceito as regras da plataforma" />
+                    <Label Grid.Column="1" Text="Li e aceito as regras da plataforma." FontSize="13" VerticalOptions="Center" />
+                </Grid>
+                <Button Text="Ler regras e uso dos dados" Style="{StaticResource BotaoContorno}" FontSize="13"
+                        Clicked="OnRulesClicked" IsEnabled="{Binding PodeEnviar}" />
+            </VerticalStackLayout>
             <ui:AvisoDaInterface Titulo="Privacidade" Mensagem="Seu apelido identifica seus relatos. Seu e-mail fica visível somente para você." />
-            <Grid ColumnDefinitions="44,*" ColumnSpacing="8">
-                <CheckBox x:Name="RulesCheckBox" IsChecked="{Binding AceitouRegras, Mode=TwoWay}" IsEnabled="{Binding PodeEnviar}"
-                          Color="#6251D2" VerticalOptions="Start" SemanticProperties.Description="Aceito as regras da plataforma" />
-                <VerticalStackLayout Grid.Column="1" Spacing="8">
-                    <Label Text="Li e aceito as regras da plataforma." />
-                    <Button Text="Ler regras e uso dos dados" Style="{StaticResource BotaoContorno}" Clicked="OnRulesClicked"
-                            IsEnabled="{Binding PodeEnviar}" />
-                </VerticalStackLayout>
-            </Grid>
             <ui:AvisoDaInterface x:Name="ErroAviso" Tom="Erro" Titulo="Revise os dados" />
             <Button x:Name="CreateAccountButton" Text="{Binding TextoBotao}" IsEnabled="{Binding PodeEnviar}" Clicked="OnCreateAccountClicked" />
             <Button Text="Já tem uma conta? Entrar" Style="{StaticResource BotaoSecundario}"

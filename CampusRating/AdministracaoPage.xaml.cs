@@ -13,11 +13,28 @@ public partial class AdministracaoPage : ContentPage
     public AdministracaoPage()
     {
         InitializeComponent();
-        NavigationPage.SetTitleView(this, new CabecalhoDoCampus("Administração"));
         BindingContext = _viewModel;
-        var sair = new ToolbarItem { Text = "Sair" };
+        var cabecalho = new Grid
+        {
+            ColumnDefinitions = [new ColumnDefinition(GridLength.Star), new ColumnDefinition(GridLength.Auto)],
+            ColumnSpacing = 12,
+            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.Center
+        };
+        var sair = new Button
+        {
+            Text = "Sair",
+            Style = (Style)Application.Current!.Resources["BotaoSecundario"],
+            FontSize = 13,
+            Padding = new Thickness(16, 6),
+            MinimumHeightRequest = 44,
+            VerticalOptions = LayoutOptions.Center
+        };
         sair.Clicked += OnLogoutClicked;
-        ToolbarItems.Add(sair);
+        cabecalho.Add(new CabecalhoDoCampus("Administração"));
+        cabecalho.Add(sair, 1);
+        NavigationPage.SetTitleView(this, cabecalho);
+        SizeChanged += (_, _) => cabecalho.WidthRequest = Math.Max(0, Width - 32);
     }
 
     protected override async void OnAppearing()

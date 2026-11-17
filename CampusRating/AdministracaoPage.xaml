@@ -10,20 +10,17 @@
         <VerticalStackLayout Spacing="14">
             <Label Text="Painel de relatos" Style="{StaticResource TituloDaPagina}" />
             <Label Text="Acompanhe e responda aos alunos." Style="{StaticResource TextoDeApoio}" />
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Andamento" FontSize="12" TextColor="#5140B5" />
-                <Grid x:Name="FiltrosDeAndamento" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
-                      ColumnSpacing="8" RowSpacing="8" IsEnabled="{Binding PodeInteragir}">
-                    <Button Text="Todos" CommandParameter="0" Style="{StaticResource FiltroSelecionado}"
-                            SemanticProperties.Description="Todos, filtro selecionado" Clicked="OnFilterClicked" />
-                    <Button Grid.Column="1" Text="Pendentes" CommandParameter="1"
-                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
-                    <Button Grid.Row="1" Text="Em análise" CommandParameter="2"
-                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
-                    <Button Grid.Row="1" Grid.Column="1" Text="Resolvidos" CommandParameter="3"
-                            Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
-                </Grid>
-            </VerticalStackLayout>
+            <Grid x:Name="FiltrosDeAndamento" ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                  ColumnSpacing="8" RowSpacing="8" IsEnabled="{Binding PodeInteragir}">
+                <Button Text="Todos" CommandParameter="0" Style="{StaticResource FiltroSelecionado}"
+                        SemanticProperties.Description="Todos, filtro selecionado" Clicked="OnFilterClicked" />
+                <Button Grid.Column="1" Text="Pendentes" CommandParameter="1"
+                        Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+                <Button Grid.Row="1" Text="Em análise" CommandParameter="2"
+                        Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+                <Button Grid.Row="1" Grid.Column="1" Text="Resolvidos" CommandParameter="3"
+                        Style="{StaticResource FiltroDoCampus}" Clicked="OnFilterClicked" />
+            </Grid>
         </VerticalStackLayout>
         <VerticalStackLayout Grid.Row="1" Spacing="8">
             <ActivityIndicator IsRunning="{Binding Carregando}" IsVisible="{Binding Carregando}" Color="#6251D2" />

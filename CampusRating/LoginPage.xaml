@@ -4,59 +4,58 @@
              xmlns:vm="clr-namespace:CampusRating.ViewModels"
              xmlns:ui="clr-namespace:CampusRating.Componentes"
              x:Class="CampusRating.LoginPage" x:DataType="vm:LoginViewModel"
-             NavigationPage.HasNavigationBar="False" BackgroundColor="White">
+             NavigationPage.HasNavigationBar="False" BackgroundColor="#F8F7FC">
     <ScrollView>
-        <VerticalStackLayout Padding="24,28" Spacing="22" MaximumWidthRequest="440" HorizontalOptions="Fill">
-            <Border Padding="24" StrokeThickness="0" StrokeShape="RoundRectangle 18">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#EDE5FF" Offset="0" />
-                        <GradientStop Color="#FAF8FF" Offset="1" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <VerticalStackLayout Spacing="12">
-                    <Image Source="campus_rating_logo.png" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" />
-                    <Label Text="Campus Rating" FontSize="23" HorizontalTextAlignment="Center" />
+        <VerticalStackLayout Padding="24,36,24,28" Spacing="24" MaximumWidthRequest="448" HorizontalOptions="Fill">
+            <HorizontalStackLayout Spacing="12" HorizontalOptions="Center">
+                <Image Source="campus_rating_logo.png" HeightRequest="54" WidthRequest="54" />
+                <Label Text="Campus Rating" FontSize="23" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+            <Border Padding="24" BackgroundColor="White" Stroke="#E6E0EF" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 22">
+                <VerticalStackLayout Spacing="20">
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="{Binding Titulo}" Style="{StaticResource TituloDaPagina}" />
+                        <Label Text="{Binding Subtitulo}" Style="{StaticResource TextoDeApoio}" />
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Spacing="16">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="E-mail" FontSize="14" />
+                            <Border Style="{StaticResource CampoDeEntrada}">
+                                <Grid ColumnDefinitions="24,*" ColumnSpacing="10">
+                                    <Image Source="login_email.png" WidthRequest="20" HeightRequest="20" />
+                                    <Entry x:Name="EmailEntry" Grid.Column="1" Text="{Binding Email, Mode=TwoWay}"
+                                           Placeholder="{Binding PlaceholderEmail}" Keyboard="Email" ReturnType="Next"
+                                           IsEnabled="{Binding PodeEnviar}" Completed="OnEmailCompleted"
+                                           SemanticProperties.Description="E-mail de acesso" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Senha" FontSize="14" />
+                            <Border Style="{StaticResource CampoDeEntrada}">
+                                <Grid ColumnDefinitions="24,*,44" ColumnSpacing="10">
+                                    <Image Source="login_lock.png" WidthRequest="20" HeightRequest="20" />
+                                    <Entry x:Name="PasswordEntry" Grid.Column="1" Text="{Binding Senha, Mode=TwoWay}"
+                                           Placeholder="Digite sua senha" IsPassword="True" ReturnType="Done"
+                                           IsEnabled="{Binding PodeEnviar}" Completed="OnPasswordCompleted"
+                                           SemanticProperties.Description="Senha de acesso" />
+                                    <ImageButton x:Name="PasswordVisibilityButton" Grid.Column="2" Source="login_eye.png"
+                                                 BackgroundColor="Transparent" Padding="10" IsEnabled="{Binding PodeEnviar}"
+                                                 SemanticProperties.Description="Mostrar ou ocultar senha" Clicked="OnTogglePasswordVisibility" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                    <ui:AvisoDaInterface x:Name="ErroAviso" Tom="Erro" Titulo="Não foi possível entrar" />
+                    <Button x:Name="LoginButton" Text="{Binding TextoBotao}" Style="{StaticResource BotaoPrimario}"
+                            IsEnabled="{Binding PodeEnviar}" Clicked="OnLoginClicked" />
+                    <Button Text="Criar conta" Style="{StaticResource BotaoSecundario}" IsVisible="{Binding MostrarCadastro}"
+                            IsEnabled="{Binding PodeEnviar}" Clicked="OnCreateAccountClicked" />
                 </VerticalStackLayout>
             </Border>
-            <VerticalStackLayout Spacing="6">
-                <Label Text="{Binding Titulo}" Style="{StaticResource TituloDaPagina}" />
-                <Label Text="{Binding Subtitulo}" Style="{StaticResource TextoDeApoio}" />
-            </VerticalStackLayout>
-            <VerticalStackLayout Spacing="8">
-                <Label Text="E-mail" FontSize="14" />
-                <Border Style="{StaticResource CampoDeEntrada}">
-                    <Grid ColumnDefinitions="24,*" ColumnSpacing="10">
-                        <Image Source="login_email.png" WidthRequest="20" HeightRequest="20" />
-                        <Entry x:Name="EmailEntry" Grid.Column="1" Text="{Binding Email, Mode=TwoWay}"
-                               Placeholder="{Binding PlaceholderEmail}" Keyboard="Email" ReturnType="Next"
-                               IsEnabled="{Binding PodeEnviar}" Completed="OnEmailCompleted"
-                               SemanticProperties.Description="E-mail de acesso" />
-                    </Grid>
-                </Border>
-            </VerticalStackLayout>
-            <VerticalStackLayout Spacing="8">
-                <Label Text="Senha" FontSize="14" />
-                <Border Style="{StaticResource CampoDeEntrada}">
-                    <Grid ColumnDefinitions="24,*,44" ColumnSpacing="10">
-                        <Image Source="login_lock.png" WidthRequest="20" HeightRequest="20" />
-                        <Entry x:Name="PasswordEntry" Grid.Column="1" Text="{Binding Senha, Mode=TwoWay}"
-                               Placeholder="Digite sua senha" IsPassword="True" ReturnType="Done"
-                               IsEnabled="{Binding PodeEnviar}" Completed="OnPasswordCompleted"
-                               SemanticProperties.Description="Senha de acesso" />
-                        <ImageButton x:Name="PasswordVisibilityButton" Grid.Column="2" Source="login_eye.png"
-                                     BackgroundColor="Transparent" Padding="10" IsEnabled="{Binding PodeEnviar}"
-                                     SemanticProperties.Description="Mostrar ou ocultar senha" Clicked="OnTogglePasswordVisibility" />
-                    </Grid>
-                </Border>
-            </VerticalStackLayout>
-            <ui:AvisoDaInterface x:Name="ErroAviso" Tom="Erro" Titulo="Não foi possível entrar" />
-            <Button x:Name="LoginButton" Text="{Binding TextoBotao}" IsEnabled="{Binding PodeEnviar}" Clicked="OnLoginClicked" />
-            <Button Text="Criar conta" Style="{StaticResource BotaoSecundario}" IsVisible="{Binding MostrarCadastro}"
-                    IsEnabled="{Binding PodeEnviar}" Clicked="OnCreateAccountClicked" />
-            <BoxView Style="{StaticResource Divisor}" />
             <Button Text="{Binding TextoAlternarPerfil}" Style="{StaticResource BotaoContorno}"
-                    IsEnabled="{Binding PodeEnviar}" Clicked="OnSwitchAccessClicked" />
+                    FontSize="13" IsEnabled="{Binding PodeEnviar}" Clicked="OnSwitchAccessClicked" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
